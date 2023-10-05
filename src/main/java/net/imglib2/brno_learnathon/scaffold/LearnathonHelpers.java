@@ -78,7 +78,7 @@ public class LearnathonHelpers
 	{
 		try
 		{
-			return new File( LoadAndDisplay.class.getResource( resourceName ).toURI() ).getAbsolutePath();
+			return new File( LearnathonHelpers.class.getResource( resourceName ).toURI() ).getAbsolutePath();
 		}
 		catch ( Exception e )
 		{
