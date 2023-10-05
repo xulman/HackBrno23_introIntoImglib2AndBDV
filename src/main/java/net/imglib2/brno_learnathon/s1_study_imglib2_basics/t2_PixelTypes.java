@@ -134,7 +134,7 @@ public class t2_PixelTypes {
 		//At runtime, the T in <T> is replaced with Object, the basis of any Java non-elementary type.
 		//In order to "preserve" the information about pixel type into runtime, one needs to maintain/keep
 		//an existing object of that type. This is a strategy adopted, for example, in our type-safe loader:
-		Img<ByteType> img1 = LearnathonHelpers.openImageResource("blobs.tif", new ByteType());
+		Img<ByteType> img1 = LearnathonHelpers.openImageResource("/blobs.tif", new ByteType());
 
 		//Alternatively, one hides, encodes essentially, the type information into the method's definition itself:
 		Img<FloatType> img2 = PlanarImgs.floats(6, 4, 3);

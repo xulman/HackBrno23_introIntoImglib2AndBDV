@@ -1,7 +1,6 @@
 package net.imglib2.brno_learnathon.s1_study_imglib2_basics;
 
 import net.imglib2.brno_learnathon.scaffold.LearnathonHelpers;
-import net.imglib2.brno_learnathon.scaffold.LoadAndDisplay;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImg;
 import net.imglib2.img.array.ArrayImgs;
@@ -49,7 +48,7 @@ public class t1_CreateImage {
 		//Images can of course be also loaded in. But ImgLib2 is outsourcing this task
 		//to external libraries. Here, for example, our helper loader leverages this
 		//task on ImageJ loading routine -- it calls internally IJ.openImage("path")
-		Img<?> img1 = LearnathonHelpers.openImageResource("blobs.tif");
+		Img<?> img1 = LearnathonHelpers.openImageResource("/blobs.tif");
 
 		//Notice that the program itself cannot know in advance what will be
 		//the pixel type of the opened image, and we thus have to live with <?>.
@@ -60,11 +59,11 @@ public class t1_CreateImage {
 		//Hmm... still it is not implying that we can do any math on the pixel values, we
 		//need to make sure that the pixel type is "numeric". Should come as no surprise that
 		//the most frequent pixel types are both numeric and native... just like our type T here:
-		Img<T> img2 = LearnathonHelpers.openImageResource("blobs.tif");
+		Img<T> img2 = LearnathonHelpers.openImageResource("/blobs.tif");
 
 		//Often, however, the programmer can assume and request certain type. Still, the loading
 		//should be done in a failsafe way, i.e., by checking the expected type (see inside the method).
-		Img<ByteType> img3 = LearnathonHelpers.openImageResource("blobs.tif", new ByteType());
+		Img<ByteType> img3 = LearnathonHelpers.openImageResource("/blobs.tif", new ByteType());
 
 		return img3;
 	}
