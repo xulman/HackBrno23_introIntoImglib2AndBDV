@@ -1,4 +1,4 @@
-package sc.scijava.tutorials.scaffold;
+package net.imglib2.brno_learnathon.scaffold;
 
 import bdv.util.BdvFunctions;
 import bvv.vistools.BvvFunctions;
