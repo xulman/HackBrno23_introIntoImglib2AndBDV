@@ -1,0 +1,24 @@
+mirrors 1/goals
+|
+but while 1/goals was showing how-to,
+here (2/goals) is a bit of understand/realize details while trying yourself
+------------------
+
+create image from one's own float array
+clone image and save it
+
+do you need float type only?
+can you generalize also for (all flavours of) ints and doubles?
+
+watchout (avoid) for fixed-dimensionality loop patterns
+localizableCursor (instead of setting positions and moving accessor)
+
+there are various ifaces used for positioning, you can avoid localize() and setPositioj()
+make sweeping of tgt image follow the src img
+avoid getXYZ() unless used very occasionally
+
+understand iteratation subtleties of various backends
+is setPosition(localize()) ideal? when and which memory locations does it visit?
+isn't it better to clone() image to warrant the same backend and just sweep two cursors?
+
+caches... advanced thing... "vertical sweep in parallel"

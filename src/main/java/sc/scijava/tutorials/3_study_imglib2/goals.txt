@@ -1,0 +1,8 @@
+exploring goodies from the imglib2:
+------------------
+
+Views, Interpolation,
+Neighborhoods
+Converters, etc... second half from i2k2020_basics
+
+(too difficult to explore w/o prior examples)
