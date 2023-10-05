@@ -5,9 +5,9 @@ read-in image from drive
 show image
 
 pixel types
-familirazie with generics
+familiarize with generics
 
 access pixels, set pixels
-familirazie with not-fixed dimensionality
+familiarize with not-fixed dimensionality
 
 iterate over pixels
