@@ -2,6 +2,7 @@ exploring goodies from the imglib2:
 ------------------
 
 Views, Interpolation,
+(fasten image processing with ROIS... via Views.Interval())
 Neighborhoods
 Converters, etc... second half from i2k2020_basics
 

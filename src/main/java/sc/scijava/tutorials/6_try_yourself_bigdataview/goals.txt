@@ -1,0 +1,16 @@
+the following could guide the selection of tutorial repo topics
+------------------
+
+- Can I use that API to open one already loaded image?
+- What pixel types are supported? How to convert from the missing ones?
+- How to tell which dimension is time? Which is channel, angle, any other “semantic” (not spatial) dimension?
+- How to tell I’m actually showing a 2D image (when 2D feels like special case of 3D and BDV allows to rotate off-the-plane)?
+
+
+- Can I show more already-loaded images in one BDV? Can I replace some later?
+- Can I ask BDV to “reload” its data (aka clear caches)?
+- Can I show my own graphics over the images?
+
+- If I wanna work with BDV, can I read/listen_fot its states? Can I ask to change state? Can I assign keyboard shortcuts? Mouse events?
+- How can I make BDV part of my own application? I felt like e.g. labkit is using BDV inside, how?
+

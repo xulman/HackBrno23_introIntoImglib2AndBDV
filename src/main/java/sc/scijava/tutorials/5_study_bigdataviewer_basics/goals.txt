@@ -1,0 +1,31 @@
+possible topics to cover:
+------------------
+
+Theory & features:
+- Theory aka “What makes it possible”: Remind of blocks and resolutions
+- plus goodies that make great UX like loading low-res and high-res in another thread  later (to have the image “cleared” a little later)
+- Can display many sources… 
+- Backed by imglib2…. Backends allow for various data fetching schemes
+
+- How to open my image (e.g. TIFF) in BDV? What pixel types are supported?
+- How to massage my images to accommodate what theory said (blocks and res.levels)?
+- What is view setup? Why is there some .xml file always around?
+- I have heard of HDF5, N5, Zarr, NGFF… are all the same?
+
+
+- What controls do I have? Main window? Some side bar? Scale bar? Legend?
+- Scale bar has some interesting icons… what are fused/single/group views? How do I define a group?
+- All is dark? I don’t see anything? What are the sliders for?
+- Why do I have Brightness & Contrast dialog, and the side bar? Do they control the same thing?
+
+- How is the view handled with a mouse? With a keyboard? It doesn’t work like Blender… ;) it rotates weirdly/widely
+- Can I zoom in? slow/fast? Restore axis-aligned views (e.g. shift+z)? Bookmarks (revisiting previous view angle)?
+
+
+- Overview/help dialog… the Controls panel is great for this (plus you can have control profiles!.. .e.g. To make it navigate napari-style, blender-style)
+- Can I share my favourite controls setup with a friend (aka copy settings files around, and where these files are on my drive?)
+
+Programmer perspective:
+- Is there any public API? Examples?
+
+
