@@ -71,11 +71,20 @@ public class t2_PixelTypes {
 	}
 
 	public static void integerRealIntermezzo() {
-		//IntegerType extends RealType, it offers all what real numbers
-		//can offer functionality-wise (!) (which is, btw, quite the opposite
-		//to the mathematical, set theory-oriented, sense of their relationship)
-		//plus it can provide an integer number (again, as a new functionality,
-		//not increasing the domain of values that are possible to hold):
+		//IntegerType extends RealType: it offers all what real numbers can
+		//offer functionality-wise (!)
+		//
+		//This may seem to be the opposite to the mathematical, set theory
+		//oriented, sense of their relationship. But "extends" here does not
+		//mean that IntegerType is a super-set of RealType. It's actually the
+		//inverse, "extends" here means "subset": Every IntegerType is a
+		//RealType (and there are other RealTypes which are not IntegerType).
+		//
+		//IntegerType extends RealType means that functionality is added:
+		//IntegerType can provide its value as an integer number, which a
+		//general RealType cannot. (Again, this means extending with new
+		//functionality, not increasing the domain of values that are possible
+		//to hold.)
 		IntType integerType = new IntType();
 		DoubleType realType = new DoubleType();
 
@@ -89,6 +98,9 @@ public class t2_PixelTypes {
 
 		//but IntegerType accepts real inputs, but in order to withstand its name
 		//it applies Util.round() (our own Util from the net.imglib2.util package)
+		//
+		//The type inheritance hierarchy only makes sense in the "read"
+		//direction. Expect "write" write to be lossy.
 		integerType.setReal(5.5);
 		System.out.println("5.5 stored and retrieved from IntegerType is "+integerType.getInteger());
 	}
