@@ -2,8 +2,8 @@ package net.imglib2.brno_learnathon.s1_study_imglib2_basics;
 
 import net.imglib2.brno_learnathon.scaffold.LearnathonHelpers;
 import net.imglib2.img.Img;
+import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.planar.PlanarImgs;
-import net.imglib2.type.BooleanType;
 import net.imglib2.type.logic.BitType;
 import net.imglib2.type.logic.BoolType;
 import net.imglib2.type.numeric.IntegerType;
@@ -12,7 +12,6 @@ import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.integer.Unsigned12BitType;
-import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
@@ -22,19 +21,20 @@ public class t2_PixelTypes {
 	public static void onTypesHierarchy() {
 		//ImgLib2 utilizes a wealth of pixel types, and a hierarchy of them:
 
-		//Examples of types that represent the elementary computing types,
-		//like byte, short, int, float... and their unsigned flavours
+		//Examples of pixel types that represent the elementary computing types,
+		//like byte, short, int, float... and their unsigned flavours:
 		ByteType byteType = new ByteType();
 		UnsignedIntType unsignedIntType = new UnsignedIntType();
 		DoubleType doubleType = new DoubleType();
 		//
-		//Btw, the signed and unsigned variants of otherwise the same type
+		//Btw, the signed and unsigned variants of otherwise the same pixel type
 		//are different only at compile time because they are simply of different types.
 		//For example, ByteType and UnsignedByteType are always 8 bits of a memory
 		//and CPU treats both the same. Not to mention that Java language does not
 		//recognize, e.g., an "unsigned byte"...
 
-		//Also specific (microscopy) types of not bytes-multiple sizes, yet packed in memory...
+		//Also specific (microscopy) pixel types of not bytes-multiple sizes
+		//(btw, they are usually nicely packed in the memory not to waste it):
 		BitType bitType = new BitType();
 		BoolType boolType = new BoolType();
 		Unsigned12BitType unsigned12BitType = new Unsigned12BitType(); //optical microscope camera type :)
@@ -57,7 +57,17 @@ public class t2_PixelTypes {
 		// IntegerType<?> i3 = doubleType; //but not this one!
 		integerRealIntermezzo();
 
-		//TODO: some conclusion to realize that types shares the same backbone
+		//The hierarchy of backbone types is the following:
+		//NumericType
+		//  ComplexType
+		//    RealType
+		//      IntegerType, BooleanType
+		//
+		//where NumericType, RealType (and also often NativeType) belong
+		//among the most frequently used "super types". They are nearly
+		//exclusively used in generics:
+		exampleMethodWithGenericTypes(byteType, unsignedIntType);
+		exampleMethodWithGenericTypes(ArrayImgs.floats(10,10));
 	}
 
 	public static void integerRealIntermezzo() {
@@ -81,6 +91,41 @@ public class t2_PixelTypes {
 		//it applies Util.round() (our own Util from the net.imglib2.util package)
 		integerType.setReal(5.5);
 		System.out.println("5.5 stored and retrieved from IntegerType is "+integerType.getInteger());
+	}
+
+	public static <TA extends RealType<TA>, TB extends RealType<TB>>
+	void exampleMethodWithGenericTypes(final TA oneType, final TB secondType) {
+		//Here, two possibly different types are taken together.
+		//The method's signature basically only requires that both input types
+		//could be treated as real-domain scalar values, allowing for, e.g.,
+		//mathematical operations to be carried on them:
+		double sum = oneType.getRealDouble() + secondType.getRealDouble();
+
+		//But not only the math operations can be realized on the types,
+		//this command grabs a new independent piece of a memory for the
+		//same type (and holds initially the same value):
+		TA anotherInstanceOfTheSameType = oneType.copy();
+
+		//When further manipulating with the type value, there are several shortcuts:
+		anotherInstanceOfTheSameType.setOne();
+		anotherInstanceOfTheSameType.setZero();
+
+		//and especially direct math operations on the same types:
+		oneType.add( anotherInstanceOfTheSameType );
+	}
+
+	public static <T extends RealType<T>>
+	void exampleMethodWithGenericTypes(final Img<T> img) {
+		//In this example, the backbone RealType is used to offer the same
+		//work over images that need not be always of the same pixel type.
+
+		//For example, a sum of pixels values of this image can be then
+		//implemented, for example, this particular way:
+		double sum = 0;
+		for (T pixel : img) {
+			sum += pixel.getRealDouble();
+		}
+		System.out.println("The sum over all pixels is: "+sum);
 	}
 
 	public static void noteOnGenerics() {
