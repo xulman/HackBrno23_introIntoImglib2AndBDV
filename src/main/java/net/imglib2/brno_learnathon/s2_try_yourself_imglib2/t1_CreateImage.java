@@ -1,11 +1,14 @@
 package net.imglib2.brno_learnathon.s2_try_yourself_imglib2;
 
 import net.imglib2.Cursor;
+import net.imglib2.RandomAccess;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
+import net.imglib2.img.array.ArrayRandomAccess;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.img.planar.PlanarImgs;
+import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.numeric.real.FloatType;
 
 public class t1_CreateImage {
@@ -49,6 +52,18 @@ public class t1_CreateImage {
 		while (c.hasNext()) {
 			c.next().set( imageData6x5[ c.getIntPosition(1)*6 + c.getIntPosition(0) ] );
 		}
+
+		// TODO (TP) Do we want to show variants of the above, e.g.,
+		//      Wrapping data in ArrayImg, we can avoid the explicit coordinate calculations.
+		Cursor<FloatType> c2 = img.localizingCursor();
+		RandomAccess< FloatType > ra = ArrayImgs.floats( imageData6x5, 6, 5 ).randomAccess();
+		while (c2.hasNext()) {
+			c2.next().set( ra.setPositionAndGet( c2 ) );
+		}
+		//      Other options include LoopBuilder etc ...
+		LoopBuilder.setImages( ArrayImgs.floats( imageData6x5, 6, 5 ), img )
+				.forEachPixel( ( i, o ) -> o.set( i ) );
+
 		return img;
 	}
 

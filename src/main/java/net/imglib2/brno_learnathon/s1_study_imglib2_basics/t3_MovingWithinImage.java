@@ -119,6 +119,9 @@ public class t3_MovingWithinImage {
 		//Show that the original cursor hasn't changed but the copy did change:
 		positionAwareCursor.localize( coordinate );
 		System.out.println("original Cursor reports position: "+ Util.printCoordinates(coordinate));
+		// TODO (TP) also possible:
+		//           System.out.println("original Cursor reports position: "+ Util.printCoordinates(positionAwareCursor));
+		//           I created an Issue https://github.com/imglib/imglib2/issues/346 to make that look nicer
 		anotherSuchCursor.localize( coordinate );
 		System.out.println("  cloned Cursor reports position: "+ Util.printCoordinates(coordinate));
 	}
@@ -189,5 +192,10 @@ public class t3_MovingWithinImage {
 
 		//not bounded images.. a function-defined ones?... must be bound to display them(?)
 		//now some show with RealCoordinates
+
+		// TODO (TP) add the following somewhere?:
+		//     In general, prefer to pass around RAI instead of II. Given a RAI, it
+		//     can be made iterable using Views.iterable(RAI), while the reverse is
+		//     not easily possible.
 	}
 }
