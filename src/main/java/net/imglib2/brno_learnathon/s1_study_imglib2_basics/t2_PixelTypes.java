@@ -13,6 +13,7 @@ import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.integer.IntType;
 import net.imglib2.type.numeric.integer.Unsigned12BitType;
 import net.imglib2.type.numeric.integer.UnsignedIntType;
+import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
 
@@ -68,6 +69,23 @@ public class t2_PixelTypes {
 		//exclusively used in generics:
 		exampleMethodWithGenericTypes(byteType, unsignedIntType);
 		exampleMethodWithGenericTypes(ArrayImgs.floats(10,10));
+
+		//Notice the decoration of the above methods:
+		// <T extends RealType<T>>
+		//
+		//There are two interesting moments:
+		//
+		//The first one was discussed just above: The wealth of operations
+		//of what one can do on the type T is determined/comes from the
+		//backbone type RealType, which indeed is rather a powerful one.
+
+		//The second one is partly touched here:
+		noteOnGenerics();
+		//The "mighty" RealType provides also methods that are wanted to return
+		//the type T itself (which in this scenario is currently substituted
+		//with the RealType). In order to achieve that, the information about
+		//the current T needs to be passed inside into RealType, and so the
+		//RealType needed to become RealType<T>.
 	}
 
 	public static void integerRealIntermezzo() {
@@ -122,7 +140,7 @@ public class t2_PixelTypes {
 		anotherInstanceOfTheSameType.setOne();
 		anotherInstanceOfTheSameType.setZero();
 
-		//and especially direct math operations on the same types:
+		//... including direct basic math short-operations on the same types:
 		oneType.add( anotherInstanceOfTheSameType );
 	}
 
@@ -150,14 +168,14 @@ public class t2_PixelTypes {
 
 		//Alternatively, one hides, encodes essentially, the type information into the method's definition itself:
 		Img<FloatType> img2 = PlanarImgs.floats(6, 4, 3);
+		Img<UnsignedShortType> img3 = PlanarImgs.unsignedShorts(6, 4, 3);
 
 		//This is again the first strategy:
-		Img<ByteType> img3 = img2.factory().imgFactory(new ByteType()).create(7, 8, 9);
+		Img<ByteType> img4 = img2.factory().imgFactory(new ByteType()).create(7, 8, 9);
 		//Here, an image of the same backend was wanted, but pixel type and image size was provided different.
 	}
 
 	public static void main(String[] args) {
 		onTypesHierarchy();
-		noteOnGenerics();
 	}
 }
