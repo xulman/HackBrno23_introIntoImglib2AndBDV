@@ -8,6 +8,33 @@ pixel types
 familiarize with generics
 
 access pixels, set pixels
-familiarize with not-fixed dimensionality
+either selectively, or iterate all of them
+notice the dimensionality pattern
 
-iterate over pixels
+realize the two regime, have functions with such (limited) params
+speaking of iterability: we talk about images that are bounded or not
+speaking of random access (but not necessarily only it):
+                     - we talk abour integer and real coordinates
+                     - (this will be further elaborated later with the Views,
+                        for now be aware that it is possible in imglib2)
+
+what helps: don't take the names for granted,
+they're long not to annoy one, but to help
+
+these are the "building blocks":
+
+Iterable -- something you can visit one be one, in "some" order,
+            being sure you don't visit the same spot twice,
+				but does not allow to jump to any spot, doesn't offer a choice
+
+Accessible -- can visit any spot,
+            consequence: can visit all spots but in one's own order
+
+Real      -- The grid coordinates naturally integer one (discrete),
+            this accepts to query real (continuous) coordinates,
+				depends on the backend and setting of the Real* object
+				what policy it employs to provide the facilitate the caller
+
+Interval  -- the coordinates of *Interval have min,max bounds in all dimensions
+
+
