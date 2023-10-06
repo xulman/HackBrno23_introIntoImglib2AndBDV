@@ -1,7 +1,9 @@
 package net.imglib2.brno_learnathon.s1_study_imglib2_basics;
 
 import net.imglib2.Cursor;
+import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.planar.PlanarImgs;
 import net.imglib2.type.numeric.RealType;
@@ -127,8 +129,65 @@ public class t3_MovingWithinImage {
 		while (cursor.hasNext()) cursor.next();
 	}
 
+	public static <T extends RealType<T>>
+	void canIterateOnlyOverTheImage(final IterableInterval<T> image) {
+		Cursor<T> c = image.cursor();
+		//RandomAccess<T> ra = image.randomAccess(); //impossible
+	}
+
+	public static <T extends RealType<T>>
+	void canOnlyJumpRandomlyOverTheImage(final RandomAccessibleInterval<T> image) {
+		//Cursor<T> c = image.cursor(); //impossible
+		RandomAccess<T> ra = image.randomAccess();
+	}
+
 	public static void main(String[] args) {
 		final Img<UnsignedShortType> gray16Image = PlanarImgs.unsignedShorts(200,200,3);
 		readAndSetSomePixels( gray16Image );
+
+		//Soooo, we saw the two fundamental access concepts:
+		// "I am a passenger, the image backend drags me around the full image
+		//   in an reasonable way, and my code is thus somewhat light-weight."
+		// vs.
+		// "I am active, I decide where to move in the image, and likely I don't
+		//  even intend to iterate over the image, I just peek at (random) places."
+
+		//When the programmer needs to use both of them at the same time,
+		//the Img<T> interface really needs to be used. However, methods often
+		//need only one of the two, most frequently probably the case of iterating
+		//over the full image (or portion of it, will be shown later).
+		//
+		//This is reflected in the design of ImgLib2 as the Img<T> is in fact
+		//a composition of RandomAccessibleInterval<T> and IterableInterval<T>.
+		canIterateOnlyOverTheImage(gray16Image);
+		canOnlyJumpRandomlyOverTheImage(gray16Image);
+		//Notice the methods' signatures.
+
+		//This is an important concept, that an image can offer
+		//only "portion" of "being a normal image" when "normal"
+		//means being of integer (discrete), regular grid-based geometry.
+		//
+		//Developing a method that requires an image with "relaxed" requirements,
+		//e.g., by alleviating the iterability when accepting only RandomAccessible
+		//images, it opens up this method to more various (and exotic) backends.
+		//
+		//What "more various backends" can be? Imagine, as a simple example, a normal
+		//image after it is rotated, normally one would have to interpolate among the
+		//(moved) pixels to figure out values at the integer grid. ...todo (introduce aside the real coords concepts)
+
+		//But before we move to examples to illustrate that, the following might
+		//come handy:
+
+		//In forums, in writings, one often finds RAI and II instead of their
+		//long names. But the long names are not here to annoy the programmer.
+		//The names are here to help. Here's how:
+		//
+		//Iterable
+		//RandomAccessible
+		//Interval
+		//Real(spatialSomething)
+
+		//not bounded images.. a function-defined ones?... must be bound to display them(?)
+		//now some show with RealCoordinates
 	}
 }
