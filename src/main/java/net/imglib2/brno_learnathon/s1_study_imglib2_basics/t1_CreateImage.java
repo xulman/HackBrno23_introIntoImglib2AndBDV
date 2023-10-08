@@ -11,7 +11,7 @@ import net.imglib2.img.planar.PlanarImg;
 import net.imglib2.img.planar.PlanarImgs;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.NumericType;
-import net.imglib2.type.numeric.integer.ByteType;
+import net.imglib2.type.numeric.integer.UnsignedByteType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.FloatType;
 
@@ -44,7 +44,7 @@ public class t1_CreateImage {
 				+img3.firstElement().getClass().getSimpleName());
 	}
 
-	public static <T extends NativeType<T> & NumericType<T>> Img<ByteType> loadImages() {
+	public static <T extends NativeType<T> & NumericType<T>> Img<UnsignedByteType> loadImages() {
 		//Images can of course be also loaded in. But ImgLib2 is outsourcing this task
 		//to external libraries. Here, for example, our helper loader leverages this
 		//task on ImageJ loading routine -- it calls internally IJ.openImage("path")
@@ -63,14 +63,14 @@ public class t1_CreateImage {
 
 		//Often, however, the programmer can assume and request certain type. Still, the loading
 		//should be done in a failsafe way, i.e., by checking the expected type (see inside the method).
-		Img<ByteType> img3 = LearnathonHelpers.openImageResource("/blobs.tif", new ByteType());
+		Img<UnsignedByteType> img3 = LearnathonHelpers.openImageResource("/blobs.tif", new UnsignedByteType());
 
 		return img3;
 	}
 
 	public static void main(String[] args) {
 		createImages();
-		Img<ByteType> imgB = loadImages();
+		Img<UnsignedByteType> imgB = loadImages();
 
 		//What good is to have an image if you cannot look at it?
 		//For now only, let's ask ImageJ to display it using the following convenience call:
