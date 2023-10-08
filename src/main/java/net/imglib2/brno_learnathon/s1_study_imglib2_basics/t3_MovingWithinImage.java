@@ -156,7 +156,7 @@ public class t3_MovingWithinImage {
 		//  even intend to iterate over the image, I just peek at (random) places."
 
 		//When the programmer needs to use both of them at the same time,
-		//the Img<T> interface really needs to be used. However, methods often
+		//the Img<T> interface is expected to be used. However, methods often
 		//need only one of the two, most frequently probably the case of iterating
 		//over the full image (or portion of it, will be shown later).
 		//
