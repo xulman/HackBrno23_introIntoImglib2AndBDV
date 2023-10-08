@@ -9,6 +9,7 @@ import net.imglib2.img.planar.PlanarImgs;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.util.Util;
+import net.imglib2.view.Views;
 
 public class t3_MovingWithinImage {
 
@@ -190,12 +191,16 @@ public class t3_MovingWithinImage {
 		//Interval
 		//Real(spatialSomething)
 
+		//Btw, did you notice that one can "easily emulate" iterability from
+		//random accessibility, while the opposite direction is more difficult?
+		//In practice, we are making use of this observation a lot and work
+		//mainly with RandomAccessibleInterval (instead of with full Img)
+		//
+		//(for the record: iterability can be "re-introduced" with Views.iterable())
+		RandomAccessibleInterval<UnsignedShortType> rai = gray16Image;
+		canIterateOnlyOverTheImage( Views.iterable(rai) );
+
 		//not bounded images.. a function-defined ones?... must be bound to display them(?)
 		//now some show with RealCoordinates
-
-		// TODO (TP) add the following somewhere?:
-		//     In general, prefer to pass around RAI instead of II. Given a RAI, it
-		//     can be made iterable using Views.iterable(RAI), while the reverse is
-		//     not easily possible.
 	}
 }
