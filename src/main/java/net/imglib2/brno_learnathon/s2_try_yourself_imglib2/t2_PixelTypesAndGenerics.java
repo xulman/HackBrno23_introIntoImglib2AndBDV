@@ -2,9 +2,25 @@ package net.imglib2.brno_learnathon.s2_try_yourself_imglib2;
 
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.NumericType;
+import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.real.FloatType;
 
 public class t2_PixelTypesAndGenerics {
+
+	//TODO (VU) this is the task itself; solution is to add generics of RealType and use different methods
+	public static
+	void switchFromByteTypeToGenericType(final Img<ByteType> sourceImg, final byte increaseValuesBy) {
+		//iterates over the image and adds the given constant to every pixel
+
+		//a variant where adding happens on the "level of pixel types"
+		final ByteType adder = new ByteType(increaseValuesBy);
+		for (ByteType px : sourceImg) px.add(adder);
+
+		//a variant where adding happens via explicit work with the pixel values;
+		//notice that using the getInteger() instead of getByte() is already a step
+		//towards general code... but a step that's still not generic enough...
+		for (ByteType px : sourceImg) px.setInteger( px.getInteger() + increaseValuesBy );
+	}
 
 	public static <T extends NumericType<T>>
 	Img<T> createCloneOfTheInputWithGenerics(final Img<T> sourceImg) {
