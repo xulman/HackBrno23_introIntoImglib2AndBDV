@@ -151,7 +151,7 @@ public class t3_MovingWithinImage {
 
 		//Soooo, we saw the two fundamental access concepts:
 		// "I am a passenger, the image backend drags me around the full image
-		//   in an reasonable way, and my code is thus somewhat light-weight."
+		//  in an reasonable way, and my code is thus somewhat light-weight."
 		// vs.
 		// "I am active, I decide where to move in the image, and likely I don't
 		//  even intend to iterate over the image, I just peek at (random) places."
@@ -170,37 +170,101 @@ public class t3_MovingWithinImage {
 		//This is an important concept, that an image can offer
 		//only "portion" of "being a normal image" when "normal"
 		//means being of integer (discrete), regular grid-based geometry.
-		//
+
 		//Developing a method that requires an image with "relaxed" requirements,
 		//e.g., by alleviating the iterability when accepting only RandomAccessible
 		//images, it opens up this method to more various (and exotic) backends.
 		//
-		//What "more various backends" can be? Imagine, as a simple example, a normal
-		//image after it is rotated, normally one would have to interpolate among the
-		//(moved) pixels to figure out values at the integer grid. ...todo (introduce aside the real coords concepts)
-
-		//But before we move to examples to illustrate that, the following might
-		//come handy:
-
-		//In forums, in writings, one often finds RAI and II instead of their
-		//long names. But the long names are not here to annoy the programmer.
-		//The names are here to help. Here's how:
+		//What "more various backends" can be? Imagine, as a simple example, one assigns an
+		//interpolator (a piece of code that knows how to fetch off-grid pixels, pixels from
+		//real valued coordinates) to an image and obtains this way an enhanced image that
+		//knows its value for any real coordinate but looses (obvious, natural) iterability.
+		//Such image basically emulates a continuous function......
+		//....whose domain may remain bounded, or not.
 		//
-		//Iterable
-		//RandomAccessible
-		//Interval
-		//Real(spatialSomething)
+		//Sorry, it got complicated, was intentional, read on, this could come handy:
+
+		//In forums, in writings, one often finds RAI and II instead of their full names
+		//(check their first letters...). But the full (and long) names are not here to annoy
+		//the programmer. The names are here to help because they (and their combinations)
+		//disclose access properties of images and data containers.
+		//
+		//It may be advantageous to step above (abstract from images) and think of
+		//generic data containers with addressable content/elements such as image that is
+		//made of pixels at coordinates, or cloud of points at coordinates, or a pure
+		//storage device with sectors to hold the data etc. Note that the ImgLib2 and
+		//affiliate libraries are dealing today with more than just pixels and images.
+
+		//Iterable:
+		//
+		//Says only that all elements of the underlying object (again, be it
+		//voxels in an image, or points of a point cloud) can be naturally visited, one by
+		//one. Notice that (existing) elements are visited, it's not about visiting all
+		//possible coordinates! It reminds very much the paradigm of a linked list data
+		//structure, or tape (sequential) storage (that rewinds over empty sectors).
+		//Anyway, such an object may be target in the for-each loop (e.g., "for px : image").
+
+		//RandomAccessible:
+		//
+		//Says that one can work on (can access) available elements in
+		//any order (incl. random order). This comes with the necessity to be able to "point
+		//at the element", to address it. The parallel may be an array data structure, or
+		//random access memory (RAM) chips where one _directly retrieves_ a value at random
+		//position. Point cloud (whose points reside at arbitrary coordinates) is thus not
+		//an instance of RandomAccessible (how would one directly request a Point without
+		//knowing its coordinate and without scanning a list until the point is found?).
+		//Images, on the other hand, are a great example because they typically assume some
+		//underlying grid and with it comes an implicit addressing scheme. Needless to say,
+		//the addressing scheme here recognizes only integer coordinates (how to read at 2.5
+		//sector when full sector is the minimum unit one can read/write?)
+		//
+		//The notion of being able to randomly access a unit of data is not purely only in
+		//the freedom of the choice itself. Realizing what's the difference in what it takes
+		//to access a fifth element in a LinkedList vs. ArrayList, that's also a very valid
+		//view angle on the iterability (LinkedList) and random accessibility (ArrayList).
+
+		//Real(spatialSomething):
+		//
+		//The ImgLib2 was designed around images, which were
+		//understood as discrete samples (of some visual reality), and thus spatial data
+		//(like coordinates, lengths etc.) were predominantly considered to reside in the
+		//integer domain. The keyword "Real" is here often understood as a "preposition" (to
+		//coordinates, lengths etc.) and flags that the real numbers domain is available
+		//in that particular case. Notable examples are:
+		//
+		//RealRandomAccessible - Flags that the (implicit) addressing scheme (for images)
+		//now accepts also real-valued coordinates. This typically comes in conjunction with
+		//some interpolation scheme that is the workhorse to fetch the off-grid pixels. But
+		//that's already an instance of a principle, in which the "Real"-part is referring
+		//mainly to the ability to be able to always provide an on-demand, on-the-fly established
+		//element and its value (recall the "2.5 sector" example: one usually cannot store
+		//all data from all real-valued coordinates).
+		//
+		//RealInterval - upgrades the resolution of the Interval (see below) because here
+		//the bounds are real numbers (not only integers).
+
+		//Interval:
+		//
+		//Informs that it is possible to construct a (typically multi-dimensional)
+		//bounding box around the content, and the Interval represents such box. The
+		//Interval explains a particular span of coordinates, it defines only the limits of
+		//the span, it does not promise availability of elements at all possible coordinates
+		//within the Interval. Realize that since "normal image" spans a finite grid, the
+		//image itself is thus also an Interval -- also notice the word Interval is part of
+		//the RAI and II names.
+
 
 		//Btw, did you notice that one can "easily emulate" iterability from
 		//random accessibility, while the opposite direction is more difficult?
+		//Besides, by adding computational constructions on top of the "normal images"
+		//(such as in the above example with interpolation), it is easier to loose
+		//iterability than random accessibility.
+		//
 		//In practice, we are making use of this observation a lot and work
 		//mainly with RandomAccessibleInterval (instead of with full Img)
 		//
 		//(for the record: iterability can be "re-introduced" with Views.iterable())
 		RandomAccessibleInterval<UnsignedShortType> rai = gray16Image;
 		canIterateOnlyOverTheImage( Views.iterable(rai) );
-
-		//not bounded images.. a function-defined ones?... must be bound to display them(?)
-		//now some show with RealCoordinates
 	}
 }
