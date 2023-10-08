@@ -48,19 +48,25 @@ public class t1_CreateImage {
 		int offset = 0;
 		for (FloatType p : img) p.set( imageData6x5[offset++] );
 
+		//Correct version, one has to take care of fetching the right values
+		//(but the solution is of a fixed dimensionality -- not a great karma in ImgLib2 world)
 		Cursor<FloatType> c = img.localizingCursor();
 		while (c.hasNext()) {
 			c.next().set( imageData6x5[ c.getIntPosition(1)*6 + c.getIntPosition(0) ] );
 		}
 
-		// TODO (TP) Do we want to show variants of the above, e.g.,
-		//      Wrapping data in ArrayImg, we can avoid the explicit coordinate calculations.
+		//If one can afford it (meaning the data is "sufficiently small"),
+		//wrapping data in ArrayImg, we can avoid the explicit coordinate calculations (and
+		//fixing the dimensionality of the solution).
 		Cursor<FloatType> c2 = img.localizingCursor();
 		RandomAccess< FloatType > ra = ArrayImgs.floats( imageData6x5, 6, 5 ).randomAccess();
 		while (c2.hasNext()) {
+			//THIS IS A GREAT PATTERN
+			//...'cause it does not require us to create an auxiliary array to store-and-forward coordinate
 			c2.next().set( ra.setPositionAndGet( c2 ) );
 		}
-		//      Other options include LoopBuilder etc ...
+
+		//Other options include LoopBuilder -- a utility for synchronized (and convenient) sweeping over images.
 		LoopBuilder.setImages( ArrayImgs.floats( imageData6x5, 6, 5 ), img )
 				.forEachPixel( ( i, o ) -> o.set( i ) );
 
