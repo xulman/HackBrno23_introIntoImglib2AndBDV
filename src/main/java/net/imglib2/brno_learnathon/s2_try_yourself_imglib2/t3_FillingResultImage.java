@@ -168,9 +168,9 @@ public class t3_FillingResultImage {
 	private static long tic() {
 		return System.currentTimeMillis();
 	}
-	private static double tac(long tic, final String mgs) {
+	private static double tac(long tic, final String msg) {
 		double timeSpan = (double)(System.currentTimeMillis() - tic) / 1000.0;
-		System.out.println("msg "+timeSpan+" millis");
+		System.out.println(msg+" took "+timeSpan+" millis");
 		return timeSpan;
 	}
 }
