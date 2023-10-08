@@ -1,30 +1,33 @@
 pixelWiseSqrt(RAI input, RAI output) [call it on different backends]
-- since both RAI... fixed loop... pos[] array for localize() and setPosition()
++ since both RAI... fixed loop... pos[] array for localize() and setPosition()
 
 pixelWiseSqrt(RAI input, RAI output) [call it on different backends]
-- turn one (the output!) into II
-- do input.position(output).processPixel()
++ turn one (the output!) into II
++ do input.position(output).processPixel()
 
 output = pixelWiseSqrt(RAI input)
-- use the good t2.clone()
-- and do again the usual pattern (with and w/o localizingCursor())
-- was it faster this time?
++ use the good t2.clone()
++ and do again the usual pattern (with and w/o localizingCursor())
++ was it faster this time?
 
 output = pixelWiseSqrt(RAI input)
-- use the good t2.clone()
-- since the same iterationOrder, sweep them as two identical IIs
-- was it faster this time?
++ use the good t2.clone()
++ since the same iterationOrder, sweep them as two identical IIs
++ was it faster this time?
 
 output = pixelWiseSqrt(RAI input)
-- use the good t2.clone()
-- since the same iterationOrder, sweep them with own explicit cycle (aka flatIteration())
-- was it faster this time?
++ use the good t2.clone()
++ since the same iterationOrder, sweep them with own explicit cycle (aka flatIteration())
++ was it faster this time?
 //sometimes this is needed, we call it flat_iteration_order
 
+was on ArrayImg, do the same again on CellImg..  may show difference, examine then the order!
 fillIncrementally(II img)
 - increases pixel value with every next iteration
 - call it (and show it) over various backends, esp. cell and Views.flatIteration(cells)
 
+
+fun project:
 now that we had touched the Views, try this 2D copier:
 - rotate clock-wise yz, so fixed 2D loop inside 3D... fixed dimensions....  cannot rotate 2D image despite the problem is intrinsically 2D
 - rotate 2D image, use Views to do yz in a 3D image, and also 2D image

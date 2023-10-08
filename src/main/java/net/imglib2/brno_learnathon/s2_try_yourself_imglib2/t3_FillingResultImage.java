@@ -82,6 +82,58 @@ public class t3_FillingResultImage {
 		}
 	}
 
+	public static <T extends FloatType>
+	RandomAccessibleInterval<T> pixelWiseCloneThenSqrt1(final Img<T> input) {
+		RandomAccessibleInterval<T> output = input.factory().create( input );
+
+		final RandomAccess<T> ra_in = input.randomAccess();
+		//the output is created by cloning the input (which guarantees the same backend),
+		//and make it II and again use it for driving the iteration
+		final Cursor<T> lc_out = Views.iterable(output).localizingCursor();
+
+		while (lc_out.hasNext()) {
+			lc_out.next();
+			ra_in.setPosition( lc_out ); //variable dimensionality covered here
+			lc_out.get().setReal( Math.sqrt(ra_in.get().get()) );
+		}
+
+		return output;
+	}
+
+	public static <T extends FloatType>
+	RandomAccessibleInterval<T> pixelWiseCloneThenSqrt2(final Img<T> input) {
+		RandomAccessibleInterval<T> output = input.factory().create( input );
+
+		//the output is created by cloning the input (which guarantees the same backend),
+		//and them both II and sweep them in parallel
+		final Cursor<T> c_in = Views.iterable(input).cursor();
+		final Cursor<T> c_out = Views.iterable(output).cursor();
+
+		while (c_out.hasNext()) {
+			c_in.next().setReal( Math.sqrt(c_out.next().get()) );
+			//variable dimensionality no problem...
+		}
+
+		return output;
+	}
+
+	public static <T extends FloatType>
+	RandomAccessibleInterval<T> pixelWiseCloneThenSqrt3(final Img<T> input) {
+		RandomAccessibleInterval<T> output = input.factory().create( input );
+
+		//the output is created by cloning the input (which guarantees the same backend),
+		//and them both II and sweep them in parallel
+		final Cursor<T> c_in = Views.flatIterable(input).cursor();
+		final Cursor<T> c_out = Views.flatIterable(output).cursor();
+
+		while (c_out.hasNext()) {
+			c_in.next().setReal( Math.sqrt(c_out.next().get()) );
+			//variable dimensionality no problem...
+		}
+
+		return output;
+	}
+
 
 	public static void main(String[] args) {
 		Img<FloatType> input = ArrayImgs.floats(1024,1024,100);
@@ -90,7 +142,7 @@ public class t3_FillingResultImage {
 
 		long t = tic();
 		pixelWiseSqrt1(input, output);
-		tac(t, "RAI,RAI, fixed loop without any cursors");
+		tac(t, "RAI,RAI, fixed-dim loop without any cursors");
 
 		t = tic();
 		pixelWiseSqrt2(input, output);
@@ -99,6 +151,18 @@ public class t3_FillingResultImage {
 		t = tic();
 		pixelWiseSqrt3(input, output);
 		tac(t, "RAI,RAI, okay loop with localizing cursor");
+
+		t = tic();
+		pixelWiseCloneThenSqrt1(input);
+		tac(t, "RAI,new, okay loop with localizing cursor");
+
+		t = tic();
+		pixelWiseCloneThenSqrt2(input);
+		tac(t, "RAI,new, II-II loop with non-localizing cursors");
+
+		t = tic();
+		pixelWiseCloneThenSqrt3(input);
+		tac(t, "RAI,new, II-II loop with non-localizing cursors, flatIterable");
 	}
 
 	private static long tic() {
