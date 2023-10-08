@@ -98,7 +98,7 @@ public class t3_MovingWithinImage {
 			moves--;
 		}
 		fasterMovingCursor.localize( coordinate );
-		System.out.println(" (Normal) Cursor reports position: "+ Util.printCoordinates(coordinate));
+		System.out.println(" (Normal) Cursor reports position: "+Util.printCoordinates(coordinate));
 		//
 		moves = 6;
 		while (positionAwareCursor.hasNext() && moves > 0) {
@@ -106,7 +106,7 @@ public class t3_MovingWithinImage {
 			moves--;
 		}
 		positionAwareCursor.localize( coordinate );
-		System.out.println("localizingCursor reports position: "+ Util.printCoordinates(coordinate));
+		System.out.println("localizingCursor reports position: "+Util.printCoordinates(coordinate));
 
 		//If for whatever reason one needs to "bookmark" the current position
 		//during the image sweeping, one can copy() the cursor and pass it to
@@ -118,13 +118,11 @@ public class t3_MovingWithinImage {
 		//(good catch! The function doesn't really need a localizingCursor, I know...)
 		//
 		//Show that the original cursor hasn't changed but the copy did change:
-		positionAwareCursor.localize( coordinate );
-		System.out.println("original Cursor reports position: "+ Util.printCoordinates(coordinate));
-		// TODO (TP) also possible:
-		//           System.out.println("original Cursor reports position: "+ Util.printCoordinates(positionAwareCursor));
-		//           I created an Issue https://github.com/imglib/imglib2/issues/346 to make that look nicer
-		anotherSuchCursor.localize( coordinate );
-		System.out.println("  cloned Cursor reports position: "+ Util.printCoordinates(coordinate));
+		System.out.println("original Cursor reports position: "+Util.printCoordinates(positionAwareCursor));
+		System.out.println("  cloned Cursor reports position: "+Util.printCoordinates(anotherSuchCursor));
+		//
+		//Btw, have you noticed the shortcut?   (Cursors implement also Localizable and there's
+		//a print function for it, so we no longer need cursor.localize() and then print it)
 	}
 
 	public static <T extends RealType<T>>
