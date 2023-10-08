@@ -1,0 +1,29 @@
+on-the-fly = on-demand
+
+
+Views - abstract image with on-the-fly computed values,
+       typically constructed over some "normal image",
+		 they basically hide away the "technicalities" of
+		 the on-the-fly computing allowing the programmer to focus
+		 on the actual work with the image, getting a pixel
+		 value should be done "simply like always".
+
+Popular use-cases:
+
+- extending the image with certain boundary while preserving
+its iterability domain... sweeps over the original image but
+can fetch pixels from outside
+
+(example that interval and getting values is not firmly connected..
+Views.extend/expand... Saalfeld larger image with no data and exception thrown)
+
+- multiple views on the same image for parallel sweeping
+
+- limiting the view, setting up a ROI, or removing/permuting the dimensions
+
+- turing RAI into II (adding iterability)
+
+
+explore yourself
+what's the difference between expand and extend?
+
