@@ -9,23 +9,16 @@ import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Intervals;
 import net.imglib2.view.Views;
 
 public class t3_FillingResultImage {
-	private static
-	boolean areSizesTheSame(final RandomAccessibleInterval<?> firstImg,
-	                        final RandomAccessibleInterval<?> secondImg) {
-		if (firstImg.numDimensions() != secondImg.numDimensions()) return false;
-		for (int n = 0; n < firstImg.numDimensions(); ++n)
-			if (firstImg.dimension(n) != secondImg.dimension(n)) return false;
-		return true;
-	}
 
 	//intentionally extends FloatType not to spoil solution, replace with something reasonable
 	public static <T extends FloatType>
 	void pixelWiseSqrt1(final RandomAccessibleInterval<T> input,
 	                    final RandomAccessibleInterval<T> output) {
-		if (!areSizesTheSame(input,output))
+		if (!Intervals.equalDimensions(input,output))
 			throw new IllegalArgumentException("The given input and output images are not of the same size.");
 
 		//since both are RAIs, we decide to iterate explicitly on our own
@@ -51,7 +44,7 @@ public class t3_FillingResultImage {
 	public static <T extends FloatType>
 	void pixelWiseSqrt2(final RandomAccessibleInterval<T> input,
 	                    final RandomAccessibleInterval<T> output) {
-		if (!areSizesTheSame(input,output))
+		if (!Intervals.equalDimensions(input,output))
 			throw new IllegalArgumentException("The given input and output images are not of the same size.");
 
 		final RandomAccess<T> ra_in = input.randomAccess();
@@ -69,7 +62,7 @@ public class t3_FillingResultImage {
 	public static <T extends FloatType>
 	void pixelWiseSqrt3(final RandomAccessibleInterval<T> input,
 	                    final RandomAccessibleInterval<T> output) {
-		if (!areSizesTheSame(input,output))
+		if (!Intervals.equalDimensions(input,output))
 			throw new IllegalArgumentException("The given input and output images are not of the same size.");
 
 		final RandomAccess<T> ra_in = input.randomAccess();
@@ -87,7 +80,7 @@ public class t3_FillingResultImage {
 	public static <T extends FloatType>
 	void pixelWiseSqrt4(final RandomAccessibleInterval<T> input,
 	                    final RandomAccessibleInterval<T> output) {
-		if (!areSizesTheSame(input,output))
+		if (!Intervals.equalDimensions(input,output))
 			throw new IllegalArgumentException("The given input and output images are not of the same size.");
 
 		//since both are RAIs, we convert the *output* (as this is the one that
