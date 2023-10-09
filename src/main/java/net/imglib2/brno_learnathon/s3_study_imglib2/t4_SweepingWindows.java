@@ -54,6 +54,10 @@ public class t4_SweepingWindows {
 		//spheres, and (very untypically for images) each sphere stretches out from
 		//its pixel over (selected, relevant) neighboring pixels. This is, however,
 		//only an abstract construction and no such image is allocated in reality.
+		//
+		//Notice (which is the usual sign for "abstract constructions") that
+		//'shape.neighborhoodsRandomAccessible' accepts RandomAccessible and
+		//not RandomAcessibleInterval (iterability is not required).
 		HyperSphereShape shape = new HyperSphereShape( SPHERE_RADIUS );
 		RandomAccessible< Neighborhood< T > > hyperspheres = shape.neighborhoodsRandomAccessible( image );
 
@@ -86,10 +90,22 @@ public class t4_SweepingWindows {
 		drawSphereAtImageCentre( image, centerPos, closeToEdgePos );
 		ImageJFunctions.show(image, "Patterned image with spheres at centre and boundary.v1");
 
+		image = t4_HandlingDimensionalityExample.get3dImageWithPattern();
 		drawSphereAtImageCentre2( image, centerPos, closeToEdgePos );
 		ImageJFunctions.show(image, "Patterned image with spheres at centre and boundary.v2");
 
+		//Notice that the second sphere, the one close to the (right) image boundary, is "continuing"
+		//on the other side (left) of the image? This is an unwanted result, which additionally
+		//depends on the backend of the image and where we write in the image (how close to the
+		//end of relevant allocated memory segments).
+		//
+		//Nevertheless, both methods accept (unbounded) RandomAccessible, which we could afford
+		//because the neighborhood methods are able to work with RandomAccessible too. Using the
+		//Views utility the image is (again, abstract construction) extended with zero boundary,
+		//and this extra zone is used to draw the "outside part" of the second sphere.
 
 		image = t4_HandlingDimensionalityExample.get3dImageWithPattern();
+		drawSphereAtImageCentre2(Views.extendZero(image), centerPos, closeToEdgePos );
+		ImageJFunctions.show(image, "Patterned image with spheres at centre and boundary.v2.zero_boundary");
 	}
 }
