@@ -234,7 +234,7 @@ public class t3_FillingResultImage {
 	}
 	private static double tac(long tic, final String msg) {
 		double timeSpan = (double)(System.currentTimeMillis() - tic) / 1000.0;
-		System.out.println(msg+" took "+timeSpan+" millis");
+		System.out.println(msg+" took "+timeSpan+" seconds");
 		return timeSpan;
 	}
 }
