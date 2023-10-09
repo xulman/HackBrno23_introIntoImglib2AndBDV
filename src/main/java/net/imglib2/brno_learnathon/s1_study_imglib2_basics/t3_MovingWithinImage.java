@@ -251,7 +251,6 @@ public class t3_MovingWithinImage {
 		//image itself is thus also an Interval -- also notice the word Interval is part of
 		//the RAI and II names.
 
-
 		//Btw, did you notice that one can "easily emulate" iterability from
 		//random accessibility, while the opposite direction is more difficult?
 		//Besides, by adding computational constructions on top of the "normal images"
@@ -264,5 +263,22 @@ public class t3_MovingWithinImage {
 		//(for the record: iterability can be "re-introduced" with Views.iterable())
 		RandomAccessibleInterval<UnsignedShortType> rai = gray16Image;
 		canIterateOnlyOverTheImage( Views.iterable(rai) );
+
+
+		//There is a lot of interfaces in the ImgLib2. Allow us to mention two more, frequently
+		//(but somewhat invisibly) used interfaces that are also very relevant to the topic
+		//of moving within an image:
+
+		//Localizable:
+		//
+		//It is a property of an object that the object can always provide its n-dimensional
+		//integer coordinate. It knows where it is, can localize itself. Cursor and RandomAccess,
+		//for example, implement Localizable.
+
+		//Positionable, RealPositionable:
+		//
+		//A property of an object that it can be placed, positioned, assigned a coordinate,
+		//be it integers-only or real coordinate. Cursor, since it cannot be user-side positioned,
+		//is not an example of Positionable, but RandomAccess is.
 	}
 }
