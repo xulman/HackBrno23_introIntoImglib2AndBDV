@@ -85,6 +85,23 @@ public class t3_FillingResultImage {
 	}
 
 	public static <T extends FloatType>
+	void pixelWiseSqrt4(final RandomAccessibleInterval<T> input,
+	                    final RandomAccessibleInterval<T> output) {
+		if (!areSizesTheSame(input,output))
+			throw new IllegalArgumentException("The given input and output images are not of the same size.");
+
+		//since both are RAIs, we convert the *output* (as this is the one that
+		//needs to be filled) into II and use it for driving the iteration
+		final Cursor<T> lc_out = Views.iterable(output).localizingCursor();
+
+		while (lc_out.hasNext()) {
+			lc_out.next();
+			T pixel = input.getAt(lc_out); //taking getAt() shortcut instead of using a proper accessor
+			pixel.setReal( Math.sqrt(pixel.get()) );
+		}
+	}
+
+	public static <T extends FloatType>
 	RandomAccessibleInterval<T> pixelWiseCloneThenSqrt1(final Img<T> input) {
 		RandomAccessibleInterval<T> output = input.factory().create( input );
 
@@ -154,6 +171,10 @@ public class t3_FillingResultImage {
 		t = tic();
 		pixelWiseSqrt3(input, output);
 		tac(t, "  RAI,RAI, okay loop with localizing cursor");
+
+		t = tic();
+		pixelWiseSqrt4(input, output);
+		tac(t, "  RAI,RAI, okay loop with localizing cursor and getAt() instead of accessor");
 
 		t = tic();
 		pixelWiseCloneThenSqrt1(input);
