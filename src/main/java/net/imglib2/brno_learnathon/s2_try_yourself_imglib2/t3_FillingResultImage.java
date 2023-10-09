@@ -9,23 +9,16 @@ import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Intervals;
 import net.imglib2.view.Views;
 
 public class t3_FillingResultImage {
-	private static
-	boolean areSizesTheSame(final RandomAccessibleInterval<?> firstImg,
-	                        final RandomAccessibleInterval<?> secondImg) {
-		if (firstImg.numDimensions() != secondImg.numDimensions()) return false;
-		for (int n = 0; n < firstImg.numDimensions(); ++n)
-			if (firstImg.dimension(n) != secondImg.dimension(n)) return false;
-		return true;
-	}
 
 	//intentionally extends FloatType not to spoil solution, replace with something reasonable
 	public static <T extends FloatType>
 	void pixelWiseSqrt1(final RandomAccessibleInterval<T> input,
 	                    final RandomAccessibleInterval<T> output) {
-		if (!areSizesTheSame(input,output))
+		if (!Intervals.equalDimensions(input,output))
 			throw new IllegalArgumentException("The given input and output images are not of the same size.");
 
 		//since both are RAIs, we decide to iterate explicitly on our own
@@ -51,7 +44,7 @@ public class t3_FillingResultImage {
 	public static <T extends FloatType>
 	void pixelWiseSqrt2(final RandomAccessibleInterval<T> input,
 	                    final RandomAccessibleInterval<T> output) {
-		if (!areSizesTheSame(input,output))
+		if (!Intervals.equalDimensions(input,output))
 			throw new IllegalArgumentException("The given input and output images are not of the same size.");
 
 		final RandomAccess<T> ra_in = input.randomAccess();
@@ -69,7 +62,7 @@ public class t3_FillingResultImage {
 	public static <T extends FloatType>
 	void pixelWiseSqrt3(final RandomAccessibleInterval<T> input,
 	                    final RandomAccessibleInterval<T> output) {
-		if (!areSizesTheSame(input,output))
+		if (!Intervals.equalDimensions(input,output))
 			throw new IllegalArgumentException("The given input and output images are not of the same size.");
 
 		final RandomAccess<T> ra_in = input.randomAccess();
@@ -87,7 +80,7 @@ public class t3_FillingResultImage {
 	public static <T extends FloatType>
 	void pixelWiseSqrt4(final RandomAccessibleInterval<T> input,
 	                    final RandomAccessibleInterval<T> output) {
-		if (!areSizesTheSame(input,output))
+		if (!Intervals.equalDimensions(input,output))
 			throw new IllegalArgumentException("The given input and output images are not of the same size.");
 
 		//since both are RAIs, we convert the *output* (as this is the one that
@@ -100,6 +93,11 @@ public class t3_FillingResultImage {
 			pixel.setReal( Math.sqrt(pixel.get()) );
 		}
 	}
+
+	//One interesting observation is that for the above we never need the
+	//Interval of the input. So these methods could be generalized further by
+	//taking RandomAccessible<T> input. They would then also work for copying
+	//regions out of larger (potentially unbounded) input images.
 
 	public static <T extends FloatType>
 	RandomAccessibleInterval<T> pixelWiseCloneThenSqrt1(final Img<T> input) {
@@ -199,9 +197,7 @@ public class t3_FillingResultImage {
 
 	public static <T extends FloatType>
 	void illustrateBackends() {
-		//The flatIterable version brings no delay on ArrayImg but brings
-		//noticeable delay on CellImg. This is a consequence of various utilization
-		//of processor caches, let's make the images a little smaller and see it:
+		//Let's fill the images and show them to see the differences in iteration orders:
 		Img<FloatType> arrayImg = ArrayImgs.floats(512,256);
 		Img<FloatType> cellImg = new CellImgFactory<>(new FloatType(), 100,100).create(512,256);
 		Img<FloatType> cellImgFI = cellImg.factory().create( cellImg );
@@ -226,6 +222,20 @@ public class t3_FillingResultImage {
 		doExperiment(arrayImg, cellImg);
 		doExperiment(cellImg, arrayImg);
 
+		//Looking at the reported times, we can notice the following:
+		//
+		//The flatIterable version naturally brings no delay on ArrayImg because
+		//flat iteration is the "native" order of ArrayImg.
+		//
+		//With CellImg, the flatIterable version brings noticeable delay on
+		//CellImg. The "native" iteration order of CellImg is visiting all
+		//pixels in the first cell, then all pixels in the second cell, and so
+		//on. To impose flat iteration order, a RandomAccess is scanned over the
+		//image, requiring to keep track of coordinates when (frequently)
+		//crossing cell boundaries, which is expensive. Also, switching between
+		//Cells frequently is less suited to utilizing processor caches.
+
+		//Let's illustrate the iteration orders:
 		illustrateBackends();
 	}
 
@@ -234,7 +244,7 @@ public class t3_FillingResultImage {
 	}
 	private static double tac(long tic, final String msg) {
 		double timeSpan = (double)(System.currentTimeMillis() - tic) / 1000.0;
-		System.out.println(msg+" took "+timeSpan+" millis");
+		System.out.println(msg+" took "+timeSpan+" seconds");
 		return timeSpan;
 	}
 }
