@@ -134,35 +134,44 @@ public class t3_FillingResultImage {
 		return output;
 	}
 
+	public static <T extends FloatType>
+	void doExperiment(final Img<T> input,
+	                  final RandomAccessibleInterval<T> output) {
 
-	public static void main(String[] args) {
-		Img<FloatType> input = ArrayImgs.floats(1024,1024,100);
+		System.out.println("Starting a new batch of experiments:");
 		input.forEach(p -> p.setReal(121));
-		Img<FloatType> output = new CellImgFactory<>(new FloatType(), 100,100,50).create(1024,1024,100);
 
 		long t = tic();
 		pixelWiseSqrt1(input, output);
-		tac(t, "RAI,RAI, fixed-dim loop without any cursors");
+		tac(t, "  RAI,RAI, fixed-dim loop without any cursors");
 
 		t = tic();
 		pixelWiseSqrt2(input, output);
-		tac(t, "RAI,RAI, okay loop with non-localizing cursor");
+		tac(t, "  RAI,RAI, okay loop with non-localizing cursor");
 
 		t = tic();
 		pixelWiseSqrt3(input, output);
-		tac(t, "RAI,RAI, okay loop with localizing cursor");
+		tac(t, "  RAI,RAI, okay loop with localizing cursor");
 
 		t = tic();
 		pixelWiseCloneThenSqrt1(input);
-		tac(t, "RAI,new, okay loop with localizing cursor");
+		tac(t, "  RAI,new, okay loop with localizing cursor");
 
 		t = tic();
 		pixelWiseCloneThenSqrt2(input);
-		tac(t, "RAI,new, II-II loop with non-localizing cursors");
+		tac(t, "  RAI,new, II-II loop with non-localizing cursors");
 
 		t = tic();
 		pixelWiseCloneThenSqrt3(input);
-		tac(t, "RAI,new, II-II loop with non-localizing cursors, flatIterable");
+		tac(t, "  RAI,new, II-II loop with non-localizing cursors, flatIterable");
+	}
+
+	public static void main(String[] args) {
+		Img<FloatType> arrayImg = ArrayImgs.floats(1024,1024,100);
+		Img<FloatType> cellImg = new CellImgFactory<>(new FloatType(), 100,100,50).create(1024,1024,100);
+
+		doExperiment(arrayImg, cellImg);
+		doExperiment(cellImg, arrayImg);
 	}
 
 	private static long tic() {
