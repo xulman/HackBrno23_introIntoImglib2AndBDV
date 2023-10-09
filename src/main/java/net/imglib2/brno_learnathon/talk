@@ -3,9 +3,13 @@ imglib2
 for images - either backed by arrays, or generated, or combined
 includes also related data types such as points, labels, etc
 
+but not focused solely on images!
+
 aims for a great deal of flexibility
 - interfaces everywhere -- plugable implementations
 - fine-control over functionality -- slim ifaces,
                              cascades of them, layers (of onion)
 
 - generics used (as no surprise)
+
+lazy paradigm

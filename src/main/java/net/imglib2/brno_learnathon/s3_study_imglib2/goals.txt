@@ -33,8 +33,8 @@ explore yourself
 what's the difference between expand and extend?
 
 
-
-Neighborhoods
 Converters, etc... second half from i2k2020_basics
+
++ Neighborhoods
 
 (too difficult to explore w/o prior examples)
