@@ -94,6 +94,11 @@ public class t3_FillingResultImage {
 		}
 	}
 
+	//One interesting observation is that for the above we never need the
+	//Interval of the input. So these methods could be generalized further by
+	//taking RandomAccessible<T> input. They would then also work for copying
+	//regions out of larger (potentially unbounded) input images.
+
 	public static <T extends FloatType>
 	RandomAccessibleInterval<T> pixelWiseCloneThenSqrt1(final Img<T> input) {
 		RandomAccessibleInterval<T> output = input.factory().create( input );
