@@ -21,10 +21,11 @@ output = pixelWiseSqrt(RAI input)
 + was it faster this time?
 //sometimes this is needed, we call it flat_iteration_order
 
-was on ArrayImg, do the same again on CellImg..  may show difference, examine then the order!
++ was on ArrayImg, do the same again on CellImg..  may show difference, examine then the order!
+
 fillIncrementally(II img)
-- increases pixel value with every next iteration
-- call it (and show it) over various backends, esp. cell and Views.flatIteration(cells)
++ increases pixel value with every next iteration
++ call it (and show it) over various backends, esp. cell and Views.flatIteration(cells)
 
 
 fun project:

@@ -1,6 +1,8 @@
 package net.imglib2.brno_learnathon.s2_try_yourself_imglib2;
 
+import net.imagej.ImageJ;
 import net.imglib2.Cursor;
+import net.imglib2.IterableInterval;
 import net.imglib2.RandomAccess;
 import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
@@ -166,12 +168,44 @@ public class t3_FillingResultImage {
 		tac(t, "  RAI,new, II-II loop with non-localizing cursors, flatIterable");
 	}
 
+	public static <T extends FloatType>
+	void visualizeIterabilityOrder(final IterableInterval<T> image) {
+		float counter = 0;
+		for (FloatType p : image) p.setReal( counter++ );
+		//Cursor<T> c = image.cursor();
+		//while (c.hasNext()) c.next().setReal( counter++ );
+	}
+
+	public static <T extends FloatType>
+	void illustrateBackends() {
+		//The flatIterable version brings no delay on ArrayImg but brings
+		//noticeable delay on CellImg. This is a consequence of various utilization
+		//of processor caches, let's make the images a little smaller and see it:
+		Img<FloatType> arrayImg = ArrayImgs.floats(512,256);
+		Img<FloatType> cellImg = new CellImgFactory<>(new FloatType(), 100,100).create(512,256);
+		Img<FloatType> cellImgFI = cellImg.factory().create( cellImg );
+
+		ImageJ ij = new ImageJ();
+		ij.ui().showUI();
+
+		visualizeIterabilityOrder(arrayImg);
+		ij.ui().show("ArrayImg: Natural order of filling", arrayImg);
+
+		visualizeIterabilityOrder(cellImg);
+		ij.ui().show("CellImg: Natural order of filling", cellImg);
+
+		visualizeIterabilityOrder( Views.flatIterable(cellImgFI) );
+		ij.ui().show("CellImg: flatIterable order of filling", cellImgFI);
+	}
+
 	public static void main(String[] args) {
 		Img<FloatType> arrayImg = ArrayImgs.floats(1024,1024,100);
 		Img<FloatType> cellImg = new CellImgFactory<>(new FloatType(), 100,100,50).create(1024,1024,100);
 
 		doExperiment(arrayImg, cellImg);
 		doExperiment(cellImg, arrayImg);
+
+		illustrateBackends();
 	}
 
 	private static long tic() {
