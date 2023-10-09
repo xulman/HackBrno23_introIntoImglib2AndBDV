@@ -4,6 +4,7 @@ import net.imglib2.img.Img;
 import net.imglib2.type.numeric.NumericType;
 import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.real.FloatType;
+import net.imglib2.util.Util;
 
 public class t2_PixelTypesAndGenerics {
 
@@ -49,6 +50,13 @@ public class t2_PixelTypesAndGenerics {
 			System.out.println("Pixel types of the clone and source: Mismatch in pixel types");
 			return false;
 		}
+		//The firstElement() method is only available in II (which Img derives from).
+		//For RAI, the following works to get the Pixel types:
+		//if (! Util.getTypeFromInterval( clone ).getClass().equals( Util.getTypeFromInterval( ref ).getClass() ) ) {
+		//	System.out.println("Pixel types of the clone and source: Mismatch in pixel types");
+		//	return false;
+		//}
+
 		System.out.println("Pixel types of the clone and source: OK");
 
 		if (clone.numDimensions() != ref.numDimensions()) {
