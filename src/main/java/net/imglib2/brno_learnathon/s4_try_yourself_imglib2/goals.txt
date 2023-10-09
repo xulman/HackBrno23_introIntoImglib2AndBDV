@@ -3,3 +3,6 @@ aka: let's do some real image processing finally....
 ------------------
 
 maartz's workshop.. doing gauss (convolution), cca (exploring imglib2.algorithms),
+
+For Matthias stuff, the double-Views example... vertical gradient
+caches... advanced thing... "vertical sweep in parallel"

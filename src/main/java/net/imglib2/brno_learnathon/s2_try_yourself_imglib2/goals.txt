@@ -20,5 +20,3 @@ avoid getXYZ() unless used very occasionally
 understand iteration subtleties of various backends
 is setPosition(localize()) ideal? when and which memory locations does it visit?
 isn't it better to clone() image to warrant the same backend and just sweep two cursors?
-
-caches... advanced thing... "vertical sweep in parallel"
