@@ -20,20 +20,20 @@ public class t1_Vistools {
 		final Img< UnsignedByteType > img = LearnathonHelpers.openImageResource( "/t1-head.tif" );
 
 		// Show it in BigDataViewer
-		Bdv bdv = BdvFunctions.show(img, "img");
+		Bdv bdv = BdvFunctions.show(img, "t1-head");
 
 		// All BdvFunctions methods will return some instance of Bdv which is a
 		// handle to the BDV instance and can be used for example to close the
 		// BDV window using bdv.close().
 		//
-		// Another use is to add more stuff to the same window by specifiying an
+		// Another use is to add more stuff to the same window by specifying an
 		// additional option Bdv.options().addTo(bdv).
 		//
 		// Here we add a random 3D ARGB image:
 		Random random = new Random();
 		Img< ARGBType > img2 = ArrayImgs.argbs(100, 100, 100);
 		img2.forEach(t -> t.set(random.nextInt()));
-		BdvSource img2Source = BdvFunctions.show( img2, "img2",
+		BdvSource img2Source = BdvFunctions.show( img2, "random pixels",
 				Bdv.options().addTo( bdv ) );
 
 		// More specifically, the return value of most BdvFunctions methods is BdvSource.
@@ -46,7 +46,6 @@ public class t1_Vistools {
 		// img2Source.removeFromBdv();
 
 		// Via bdv.getBdvHandle() you can get access to the BDV ViewerPanel and
-		// SetupAssignments allowing more fine-grained manipulations of BDV
-		// state.
+		// SetupAssignments allowing more fine-grained manipulations of BDV state.
 	}
 }
