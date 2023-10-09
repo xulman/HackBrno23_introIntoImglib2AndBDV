@@ -192,9 +192,7 @@ public class t3_FillingResultImage {
 
 	public static <T extends FloatType>
 	void illustrateBackends() {
-		//The flatIterable version brings no delay on ArrayImg but brings
-		//noticeable delay on CellImg. This is a consequence of various utilization
-		//of processor caches, let's make the images a little smaller and see it:
+		//Let's fill the images and show them to see the differences in iteration orders:
 		Img<FloatType> arrayImg = ArrayImgs.floats(512,256);
 		Img<FloatType> cellImg = new CellImgFactory<>(new FloatType(), 100,100).create(512,256);
 		Img<FloatType> cellImgFI = cellImg.factory().create( cellImg );
@@ -219,6 +217,20 @@ public class t3_FillingResultImage {
 		doExperiment(arrayImg, cellImg);
 		doExperiment(cellImg, arrayImg);
 
+		//Looking at the reported times, we can notice the following:
+		//
+		//The flatIterable version naturally brings no delay on ArrayImg because
+		//flat iteration is the "native" order of ArrayImg.
+		//
+		//With CellImg, the flatIterable version brings noticeable delay on
+		//CellImg. The "native" iteration order of CellImg is visiting all
+		//pixels in the first cell, then all pixels in the second cell, and so
+		//on. To impose flat iteration order, a RandomAccess is scanned over the
+		//image, requiring to keep track of coordinates when (frequently)
+		//crossing cell boundaries, which is expensive. Also, switching between
+		//Cells frequently is less suited to utilizing processor caches.
+
+		//Let's illustrate the iteration orders:
 		illustrateBackends();
 	}
 
