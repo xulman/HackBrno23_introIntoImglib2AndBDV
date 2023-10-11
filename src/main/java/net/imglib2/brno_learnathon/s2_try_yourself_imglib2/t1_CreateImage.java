@@ -12,6 +12,14 @@ import net.imglib2.type.numeric.real.FloatType;
 
 public class t1_CreateImage {
 
+	/** This is supposed to represent a 2D image with 5 rows and 6 columns.
+	 *  It could have been understood as 6x5x1 (or 6x5x1x1, or....) but we
+	 *  wish to stay with just two (2) dimensions for now.
+	 *
+	 *  In the exercise, we will try to push this data into ImgLib2 images
+	 *  implemented with various backends. It would go easy for some, and less
+	 *  so for others....
+	 */
 	static final float[] imageData6x5 = {
 			25, 25, 25, 25, 25, 25,
 			25, 10, 10, 10, 10, 25,
