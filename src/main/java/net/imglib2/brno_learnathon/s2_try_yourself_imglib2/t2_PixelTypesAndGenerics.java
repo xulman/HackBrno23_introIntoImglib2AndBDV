@@ -8,7 +8,7 @@ import net.imglib2.util.Util;
 
 public class t2_PixelTypesAndGenerics {
 
-	//TODO (VU) this is the task itself; solution is to add generics of RealType and use different methods
+	//TODO would be more appreciated if the following method works on more than ByteType
 	public static
 	void switchFromByteTypeToGenericType(final Img<ByteType> sourceImg, final byte increaseValuesBy) {
 		//iterates over the image and adds the given constant to every pixel
@@ -23,8 +23,8 @@ public class t2_PixelTypesAndGenerics {
 		for (ByteType px : sourceImg)
 	}
 
-	public static <T extends NumericType<T>>
-	Img<T> createCloneOfTheInputWithGenerics(final Img<T> sourceImg) {
+	public static
+	Img<FloatType> createCloneOfTheInputWithGenerics(final Img<FloatType> sourceImg) {
 		//We wish only the geometry and backend of the image to be preserved
 
 		//If also voxel values were to be copied...
