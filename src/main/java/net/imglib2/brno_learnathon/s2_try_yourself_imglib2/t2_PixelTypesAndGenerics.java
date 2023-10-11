@@ -15,18 +15,17 @@ public class t2_PixelTypesAndGenerics {
 
 		//a variant where adding happens on the "level of pixel types"
 		final ByteType adder = new ByteType(increaseValuesBy);
-		for (ByteType px : sourceImg) px.add(adder);
+		for (ByteType px : sourceImg)
 
 		//a variant where adding happens via explicit work with the pixel values;
 		//notice that using the getInteger() instead of getByte() is already a step
 		//towards general code... but a step that's still not generic enough...
-		for (ByteType px : sourceImg) px.setInteger( px.getInteger() + increaseValuesBy );
+		for (ByteType px : sourceImg)
 	}
 
 	public static <T extends NumericType<T>>
 	Img<T> createCloneOfTheInputWithGenerics(final Img<T> sourceImg) {
 		//We wish only the geometry and backend of the image to be preserved
-		return sourceImg.factory().create( sourceImg );
 
 		//If also voxel values were to be copied...
 		//return sourceImg.copy();

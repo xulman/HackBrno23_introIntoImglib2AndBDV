@@ -23,25 +23,9 @@ public class t4_HandlingDimensionalityExample {
 		if (image.dimension(1) != image.dimension(2))
 			throw new IllegalArgumentException("The rotated plane of the input image must be square.");
 
-		RandomAccess<T> ra = image.randomAccess();
-		RandomAccess<T> rb = image.randomAccess();
-		for (int z = 0; z < image.dimension(2); ++z)
-			for (int y = z; y < image.dimension(1); ++y) {
-				//NB: doesn't even iterate over all x-values
-				final long x = 10;
-				float val = ra.setPositionAndGet(x,y,z).getRealFloat();
-				//ra.setPositionAndGet(x,y,z).setReal( ra.setPositionAndGet(x,z,y).getRealFloat() );
-				//beware! accessor is positioned, but before written to it is positioned elsewhere!
-				//
-				//ra.setPositionAndGet(x,y,z).setReal( rb.setPositionAndGet(x,z,y).getRealFloat() );
-				//up: using two accessors is a workaround,
-				//below: but don't need to position second time
-				ra.get().setReal( rb.setPositionAndGet(x,z,y).getRealFloat() );
-				rb.get().setReal( val );
-			}
+		......
 	}
 
-	//TODO this will have to be provided by students
 	public static <T extends FloatType>
 	void flipExactly2D(final RandomAccessibleInterval<T> image) {
 		//it is expected that the caller will massage the image to become
@@ -54,18 +38,7 @@ public class t4_HandlingDimensionalityExample {
 		if (image.dimension(0) != image.dimension(1))
 			throw new IllegalArgumentException("The input image must be square.");
 
-		RandomAccess<T> ra = image.randomAccess();
-		RandomAccess<T> rb = image.randomAccess();
-		for (int coord1 = 0; coord1 < image.dimension(1); ++coord1)
-			for (int coord0 = coord1; coord0 < image.dimension(0); ++coord0) {
-				float val = ra.setPositionAndGet(coord0,coord1).getRealFloat();
-				ra.get().setReal(
-						//move to the opposite position
-						//btw, two extra calls of setPosition() are removed
-						rb.setPositionAndGet(coord1,coord0).getRealFloat()
-				);
-				rb.get().setReal( val );
-			}
+		......
 	}
 
 	public static void main(String[] args) {
