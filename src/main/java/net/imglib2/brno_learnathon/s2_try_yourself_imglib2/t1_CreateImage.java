@@ -3,6 +3,7 @@ package net.imglib2.brno_learnathon.s2_try_yourself_imglib2;
 import net.imagej.ImageJ;
 import net.imglib2.Cursor;
 import net.imglib2.RandomAccess;
+import net.imglib2.converter.RealTypeConverters;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.array.ArrayRandomAccess;
@@ -93,23 +94,14 @@ public class t1_CreateImage {
 		//If one can afford it (meaning the data is "sufficiently small"),
 		//wrapping data in ArrayImg, we can avoid the explicit coordinate calculations (and
 		//fixing the dimensionality of the solution).
-		RandomAccess<ByteType> ra = ArrayImgs.bytes(imageData6x5, 6, 5).randomAccess();
-		CellImg<FloatType, ?> cellImg2 = new CellImgFactory<>(new FloatType()).create(6, 5);
+		RandomAccess<FloatType> ra = RealTypeConverters.convert(
+				ArrayImgs.bytes(imageData6x5, 6, 5),
+				new FloatType()).randomAccess();
+		Img<FloatType> cellImg2 = new CellImgFactory<>(new FloatType()).create(6, 5);
+
 		Cursor<FloatType> c2 = cellImg2.localizingCursor();
 		while (c2.hasNext()) {
-			//...'cause it does not require us to create an auxiliary array to store-and-forward coordinate
-
-			c2.fwd();
-			ra.setPosition( c2 ); //plan A
-			//
-			c2.localize( ra ); //plan B
-			//A.equals(B)
-
-
-			c2.get().setInteger( ra.get().getInteger() ); //plan C
-			//THIS IS A GREAT PATTERN
-			c2.get().set( ra.get() ); //plan D
-			//C.equals(D)
+			c2.next().set( ra.setPositionAndGet(c2) );
 		}
 
 		//Other options include LoopBuilder -- a utility for synchronized (and convenient) sweeping over images.
