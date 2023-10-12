@@ -52,6 +52,7 @@ public class t3_FillingResultImage {
 		//needs to be filled) into II and use it for driving the iteration
 		final Cursor<T> lc_out = Views.iterable(output).cursor();
 
+		.....
 		}
 	}
 
@@ -66,10 +67,7 @@ public class t3_FillingResultImage {
 		//needs to be filled) into II and use it for driving the iteration
 		final Cursor<T> lc_out = Views.iterable(output).localizingCursor();
 
-		while (lc_out.hasNext()) {
-			lc_out.next();
-			ra_in.setPosition( lc_out ); //variable dimensionality covered here
-			lc_out.get().setReal( Math.sqrt(ra_in.get().get()) );
+		.....
 		}
 	}
 
