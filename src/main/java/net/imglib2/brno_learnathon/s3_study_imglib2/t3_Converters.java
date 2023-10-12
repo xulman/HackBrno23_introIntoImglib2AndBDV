@@ -31,7 +31,7 @@ public class t3_Converters {
 		// We specify
 		//   - the source img,
 		//   - a Converter (which is just a BiConsumer, but was there before
-		//     BiConsumer was added to Java ...) The converter takes two Types,
+		//     BiConsumer was added to Java). The converter takes two Types,
 		//     the input and the output.
 		//   - an instance of the output type.
 		RandomAccessibleInterval< FloatType > floatImg = Converters.convert( img, ( i, o ) -> o.set( i.getRealFloat() ), new FloatType() );
@@ -42,8 +42,7 @@ public class t3_Converters {
 		// Now, use another converter to apply the function
 		//   y = cos(sqrt(x))
 		// to the pixel values. The output type should be DoubleType.
-		RandomAccessibleInterval< DoubleType > result =//
-				//TODO: remove implementation
+		RandomAccessibleInterval< DoubleType > result =
 				Converters.convert( floatImg, ( i, o ) -> o.set( Math.cos( Math.sqrt( i.get() ) ) ), new DoubleType() );
 
 		ImageJFunctions.show( result );
@@ -65,12 +64,10 @@ public class t3_Converters {
 		// does not compile.
 		//
 		// We can however use another converter to transform the image into a suitable type.
-		// For example, we can extract the green channel as a UnsignedByteType image:
-		final RandomAccessibleInterval< UnsignedByteType > green = //
-				//TODO: remove implementation
+		// For example, we can extract the green channel as an UnsignedByteType image:
+		final RandomAccessibleInterval< UnsignedByteType > green =
 				Converters.convert( clown, ( i, o ) -> o.set( ARGBType.green( i.get() ) ), new UnsignedByteType() );
 		displayCosine( green );
-
 
 		// Converters are read-only, e.g., writing to the "green" image above
 		// will not change "clown". For that, we can use writable converters:
@@ -89,11 +86,9 @@ public class t3_Converters {
 
 		// Write-conversion is trickier than read-only, and only works for
 		// certain NativeTypes. Some useful pre-defined write-converters are
-		// provided in the Converters utility class. Try to figure out how to
-		// extract the red channel (channel index 1) of img as a writable
-		// UnsigneByteType image:
-		final RandomAccessibleInterval< UnsignedByteType > redChannel = //
-				//TODO: remove implementation
+		// provided in the Converters utility class. This extracts the red
+		// channel (channel index 1) of img as a writable UnsignedByteType image:
+		final RandomAccessibleInterval< UnsignedByteType > redChannel =
 				Converters.argbChannel( img, 1 );
 
 		// Writing to redChannel changes the img values!
@@ -102,7 +97,7 @@ public class t3_Converters {
 		// We have to display img again to see the changes.
 		ImageJFunctions.show(img).setTitle("red=0");
 
-		// To create a custom write-conversion, one needs to defina a
+		// To create a custom write-conversion, one needs to define a
 		// SamplerConverter<A,B>. If you are interested, have a look at the
 		// implementation of Converters.argbChannel(...)
 	}
