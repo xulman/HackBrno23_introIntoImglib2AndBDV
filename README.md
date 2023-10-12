@@ -20,7 +20,14 @@ Exercises for this module can be found [here](src/main/java/net/imglib2/brno_lea
 
 Exercises for this module can be found [here](src/main/java/net/imglib2/brno_learnathon/s4_try_yourself_imglib2).
 
+* Views are a way to create a different interpretation of the data of some image. In particular, no data is copied.
+* To ensure that operations on views have the correct iteration order and are as efficient as possible, it is best to use `LoopBuilder`.
+* Converters are a way of filtering the data of an image by a custom supplied function on a per-pixel basis. They are evaluated on the fly.
+
 
 ### [BigDataViewer basics](src/main/java/net/imglib2/brno_learnathon/s5_study_bigdataviewer_basics)
 
 Exercises for this module can be found [here](src/main/java/net/imglib2/brno_learnathon/s6_try_yourself_bigdataviewer).
+
+* Most BigDataViewer functionality is accessible programmatically through methods on `Bdv` objects.
+* One can add continuous objects (e.g., `RealRandomAccessible`) to discrete objects (e.g., `RandomAccessibleInterval`) to BigDataViewer, where the visualization is based on the current resolution level.
