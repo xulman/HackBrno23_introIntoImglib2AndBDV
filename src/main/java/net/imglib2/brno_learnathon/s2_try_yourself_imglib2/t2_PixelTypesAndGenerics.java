@@ -1,7 +1,9 @@
 package net.imglib2.brno_learnathon.s2_try_yourself_imglib2;
 
+import net.imglib2.Dimensions;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.NumericType;
+import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Util;
@@ -23,9 +25,10 @@ public class t2_PixelTypesAndGenerics {
 		for (ByteType px : sourceImg)
 	}
 
-	public static
-	Img<FloatType> createCloneOfTheInputWithGenerics(final Img<FloatType> sourceImg) {
+	public static <T extends RealType<T>>
+	Img<T> createCloneOfTheInputWithGenerics(final Img<T> sourceImg) {
 		//We wish only the geometry and backend of the image to be preserved
+		return sourceImg.factory().create( sourceImg );
 
 		//If also voxel values were to be copied...
 		//return sourceImg.copy();
