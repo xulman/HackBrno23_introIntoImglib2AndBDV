@@ -42,9 +42,7 @@ public class t3_Converters {
 		// Now, use another converter to apply the function
 		//   y = cos(sqrt(x))
 		// to the pixel values. The output type should be DoubleType.
-		RandomAccessibleInterval< DoubleType > result =//
-				//TODO: remove implementation
-				Converters.convert( floatImg, ( i, o ) -> o.set( Math.cos( Math.sqrt( i.get() ) ) ), new DoubleType() );
+		RandomAccessibleInterval< DoubleType > result = null;
 
 		ImageJFunctions.show( result );
 	}
@@ -66,9 +64,7 @@ public class t3_Converters {
 		//
 		// We can however use another converter to transform the image into a suitable type.
 		// For example, we can extract the green channel as a UnsignedByteType image:
-		final RandomAccessibleInterval< UnsignedByteType > green = //
-				//TODO: remove implementation
-				Converters.convert( clown, ( i, o ) -> o.set( ARGBType.green( i.get() ) ), new UnsignedByteType() );
+		final RandomAccessibleInterval< UnsignedByteType > green = null;//
 		displayCosine( green );
 
 
@@ -92,9 +88,7 @@ public class t3_Converters {
 		// provided in the Converters utility class. Try to figure out how to
 		// extract the red channel (channel index 1) of img as a writable
 		// UnsigneByteType image:
-		final RandomAccessibleInterval< UnsignedByteType > redChannel = //
-				//TODO: remove implementation
-				Converters.argbChannel( img, 1 );
+		final RandomAccessibleInterval< UnsignedByteType > redChannel = null;
 
 		// Writing to redChannel changes the img values!
 		Views.iterable( redChannel ).forEach( red -> red.set( 0 ) );
