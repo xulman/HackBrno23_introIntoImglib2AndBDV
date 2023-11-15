@@ -1,5 +1,9 @@
 package net.imglib2.brno_learnathon.s3_study_imglib2;
 
+import bdv.util.Bdv;
+import bdv.util.BdvFunctions;
+import bdv.util.BdvStackSource;
+import bdv.viewer.ViewerPanel;
 import net.imglib2.Cursor;
 import net.imglib2.FinalInterval;
 import net.imglib2.Interval;
@@ -10,7 +14,9 @@ import net.imglib2.img.Img;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
 import net.imglib2.loops.LoopBuilder;
+import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.NativeType;
+import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Intervals;
@@ -92,29 +98,57 @@ public class t1_Views {
 		Img<T> resultImage = image.factory().create(image);
 		Cursor<T> res = resultImage.cursor();
 
-		//Extend boundaries to make sure input images can provide values just "everywhere"
-		ExtendedRandomAccessibleInterval<T, RandomAccessibleInterval<T>> extendedImage = Views.extendBorder(image);
-		//This is, btw, a RandomAccessible (infinite extent) image, without na Interval (we've talked about that)....
-		//
-		//...over which we would create two constructions with same-sized Intervals but
-		//shifted - positioned slightly off w.r.t. the original image (Interval)
-		IntervalView<T> backwardShiftedImage = Views.interval(extendedImage, Intervals.translate(image, -1, 0));
-		IntervalView<T> forwardShiftedImage = Views.interval(extendedImage, Intervals.translate(image, +1, 0));
 
-		//could have also been: Views.interval(...).cursor()
+		//Extend the boundaries to make sure the input images can provide values just "everywhere":
+		ExtendedRandomAccessibleInterval<T, RandomAccessibleInterval<T>> extendedImage = Views.extendBorder(image);
+		//This is, btw, a RandomAccessible (infinite extent) image, without an Interval (we've talked about that).
+		// (Exceptionally here, the title shall be parsed as ExtendedFoo, not ExtendedFooInterval,
+		//  because here the Foo happens to be a RandomAccessibleInterval... life's not perfect.)
+		//
+		//So, it is a RandomAccessible over which we would create two constructions with same-sized Intervals but
+		//shifted - positioned slightly off w.r.t. the original image (Interval)
+		Interval theOriginalInterval = new FinalInterval(image);
+		IntervalView<T> backwardShiftedImage = Views.interval(extendedImage, Intervals.translate(theOriginalInterval, -1, 0));
+		IntervalView<T> forwardShiftedImage = Views.interval(extendedImage, Intervals.translate(theOriginalInterval, +1, 0));
+
 		Cursor<T> back = backwardShiftedImage.cursor();
 		Cursor<T> forw = forwardShiftedImage.cursor();
 		while (res.hasNext()) {
 			res.next().setReal((forw.next().getRealDouble() - back.next().getRealDouble()) / 2.0);
 		}
+		ImageJFunctions.show(resultImage, "horizontal central difference, native iterations ("+resultImage.getClass().getSimpleName()+")");
+		//But, beware!, while all the three intervals are of the same size and their individual "iterabilities"
+		//are happening in fact over the one same source, their own natural iteration orders may not necessarily
+		//be exactly the same.... for CellImgs, for example, the looping/iterating wraps at cells boundaries
+		//(which were not changed... remember?, the underlying image is not changed, and Views are not creating
+		//any new images (which might have been with updated cell boundaries)) but the boundaries are now
+		//differently away from the respective image boundaries (beginnings of their Intervals).
+
+		//are now differently far away from timage boundaries
+		//off by one (due to the intervals translations)...
+		//
+		//The only way out is to use the flat iteration order. One either has to "enforce" it via
+		//the Views.flatIterable(), or via the LoopBuilder (which internally, for this specific case,
+		//does also the flatIterable()).
+
+		//The above again but with flatIteration():
+		back = Views.flatIterable( backwardShiftedImage ).cursor();
+		forw = Views.flatIterable( forwardShiftedImage ).cursor();
+		res = Views.flatIterable( resultImage ).cursor();
+		while (res.hasNext()) {
+			res.next().setReal((forw.next().getRealDouble() - back.next().getRealDouble()) / 2.0);
+		}
+		ImageJFunctions.show(resultImage, "horizontal central difference, flat iterations ("+resultImage.getClass().getSimpleName()+")");
+
+		//or, as suggested, the LoopBuilder:
+		LoopBuilder.setImages(resultImage, backwardShiftedImage, forwardShiftedImage)
+				.forEachPixel((r, b,f) -> r.setReal( (f.getRealDouble()-b.getRealDouble())/2.0 ));
 		ImageJFunctions.show(resultImage, "horizontal central difference ("+resultImage.getClass().getSimpleName()+")");
-		//btw, beware! that for CellImgs such looping wraps at cell boundaries...
-		//...and not only at the very ends of the image
 
 		LoopBuilder.setImages(resultImage, backwardShiftedImage,forwardShiftedImage)
-				.flatIterationOrder() //assures that the scanning order is always the "natural one"
+				.multiThreaded()
 				.forEachPixel((r, b,f) -> r.setReal( (f.getRealDouble()-b.getRealDouble())/2.0 ));
-		ImageJFunctions.show(resultImage, "horizontal central difference with LoopBuilder ("+resultImage.getClass().getSimpleName()+")");
+		ImageJFunctions.show(resultImage, "horizontal central difference, with LoopBuilder ("+resultImage.getClass().getSimpleName()+")");
 	}
 
 	public static <T extends RealType<T>>
@@ -177,8 +211,13 @@ public class t1_Views {
 		//The axes can be also permuted, and also the image dimensionality
 		//can be decreased or increased.
 
-		ImageJFunctions.show( Views.permute(image, 0,1),
+		BdvStackSource<T> bdv = BdvFunctions.show(Views.permute(image, 0, 1),
 				"Image with permuted order of axes (flipped x and y axes)");
+		
+		
+		
+		//ImageJFunctions.show( Views.permute(image, 0,1),
+		//		"Image with permuted order of axes (flipped x and y axes)");
 
 		//becoming 2D
 		ImageJFunctions.show( Views.hyperSlice(image, 2,0),
@@ -191,7 +230,7 @@ public class t1_Views {
 		//data is used at any coordinate in the new 4th dimension.
 	}
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 
 		//This session is about the utility class Views -- a collection of extremely useful
 		//tools in the hands of image processing programmer, where a tool = one individual View.
@@ -219,12 +258,36 @@ public class t1_Views {
 		//In the following we will demonstrate several popular use cases.
 		final Img<FloatType> image = t4_HandlingDimensionalityExample.get3dImageWithPattern();
 
+		/*
 		enlargingImagesWithArtificialOutsideSurroundings(image);
 		multipleViews(image);
 		multipleViews( cloneAsCellImg(image) );
 		addingIterability(image);
 		limitingViews(image);
 		axesAndDimensions(image);
+		*/
+
+		BdvStackSource<FloatType> bdv = BdvFunctions.show(Views.permute(image, 0, 1), "FLIPPED");
+		bdv.setDisplayRange(0,2000); //modifies the source
+		bdv.setColor(new ARGBType(0xFF0000)); //red
+		//bdv.removeFromBdv(); //removes the source
+
+		AffineTransform3D t = new AffineTransform3D();
+		t.translate(101,0,0);
+		BdvStackSource<FloatType> bdv2 = BdvFunctions.show(image, "ORIGINAL", Bdv.options().addTo( bdv ).sourceTransform(t));
+		bdv2.setDisplayRange(10,1990); //modifies the source
+		bdv2.setColor(new ARGBType(0x0000FF)); //blue
+
+		ViewerPanel bdvViewer = bdv.getBdvHandle().getViewerPanel();
+		int counter = 0;
+		Cursor<FloatType> c = Views.interval( Views.permute(image,0,1), Intervals.createMinSize(20,20,0, 20,20,100) ).cursor();
+		while( c.hasNext() ) {
+			c.next().setReal(2000);
+			counter++;
+			System.out.println("I have already changed " + counter + " pixels");
+			bdvViewer.requestRepaint();
+			Thread.sleep(10);
+		}
 	}
 
 	private static <T extends RealType<T> & NativeType<T>>
