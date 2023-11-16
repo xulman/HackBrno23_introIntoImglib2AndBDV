@@ -146,7 +146,7 @@ public class t3_FillingResultImage {
 		final Cursor<T> c_out = Views.flatIterable(output).cursor();
 
 		while (c_out.hasNext()) {
-			c_in.next().setReal( Math.sqrt(c_out.next().get()) );
+			c_out.next().setReal( Math.sqrt(c_in.next().get()) );
 			//variable dimensionality no problem...
 		}
 
