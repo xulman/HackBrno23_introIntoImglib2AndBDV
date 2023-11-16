@@ -180,9 +180,9 @@ public class t3_FillingResultImage {
 		pixelWiseSqrt3(input, output);
 		tac(t, "  RAI,RAI, okay loop with localizing cursor");
 
-		t = tic();
-		pixelWiseSqrt4(input, output);
-		tac(t, "  RAI,RAI, okay loop with localizing cursor and getAt() instead of accessor");
+		//t = tic();
+		//pixelWiseSqrt4(input, output);
+		//tac(t, "  RAI,RAI, okay loop with localizing cursor and getAt() instead of accessor");
 
 		t = tic();
 		pixelWiseCloneThenSqrt1(input);
