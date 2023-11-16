@@ -92,7 +92,7 @@ public class t3_FillingResultImage {
 		while (lc_out.hasNext()) {
 			lc_out.next();
 			T pixel = input.getAt(lc_out); //taking getAt() shortcut instead of using a proper accessor
-			pixel.setReal( Math.sqrt(pixel.get()) );
+			lc_out.get().setReal( Math.sqrt(pixel.get()) );
 		}
 	}
 
