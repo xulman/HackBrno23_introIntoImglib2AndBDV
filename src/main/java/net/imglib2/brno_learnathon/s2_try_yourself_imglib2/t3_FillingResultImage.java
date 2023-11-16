@@ -8,6 +8,8 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.loops.LoopBuilder;
+import net.imglib2.type.numeric.integer.ByteType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Intervals;
 import net.imglib2.view.Views;
@@ -152,6 +154,14 @@ public class t3_FillingResultImage {
 	}
 
 	public static <T extends FloatType>
+	RandomAccessibleInterval<T> pixelWiseCloneThenLoopBuilderWithSqrt(final Img<T> input) {
+		RandomAccessibleInterval<T> output = input.factory().create(input);
+
+		LoopBuilder.setImages(input, output).forEachPixel((i,o) -> o.setReal( Math.sqrt(i.getRealDouble()) ) );
+		return output;
+	}
+
+	public static <T extends FloatType>
 	void doExperiment(final Img<T> input,
 	                  final RandomAccessibleInterval<T> output) {
 
@@ -184,6 +194,10 @@ public class t3_FillingResultImage {
 
 		t = tic();
 		pixelWiseCloneThenSqrt3(input);
+		tac(t, "  RAI,new, II-II loop with non-localizing cursors, flatIterable");
+
+		t = tic();
+		pixelWiseCloneThenLoopBuilderWithSqrt(input);
 		tac(t, "  RAI,new, II-II loop with non-localizing cursors, flatIterable");
 	}
 
