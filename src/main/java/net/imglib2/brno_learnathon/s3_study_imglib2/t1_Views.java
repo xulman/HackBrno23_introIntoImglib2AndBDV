@@ -24,14 +24,14 @@ import java.util.Arrays;
 public class t1_Views {
 	public static <T extends RealType<T>>
 	void enlargingImagesWithArtificialOutsideSurroundings(final RandomAccessibleInterval<T> image) {
-		//For the use of case of computing convolution, one typically need to
-		//extend the image with certain boundary while preserving its iterability domain,
+		//For the use-case of computing a convolution, one typically needs to extend
+		//the image with certain boundary condition while preserving its iterable domain,
 		//the original Interval... The convolution outer-loop sweeps over the original
-		//image but it can fetch pixels from outside the image
+		//image, but it can fetch pixels from outside the image
 
 		//For example, this enlarges the original image by 50 pixels on each side
 		//in each dimension (that is by 100 pixels along each dimension), and the
-		//new area contains mirrored boundary image data:
+		//new area contains the mirrored data from the image boundary:
 		//(this here only specifies the boundary extension per dimension)
 		long[] borderSizes = new long[image.numDimensions()];
 		Arrays.setAll(borderSizes, arrayIndex -> 50);
@@ -55,14 +55,14 @@ public class t1_Views {
 		//                images with some Interval again
 
 		//The expandFoo() variants conduct the two steps in one call, they build the boundary
-		//                extended image and "intervalize" it... and require boundary size
-		//                specification parameters therefore
+		//                extended image and "intervalize" it... and therefore requires boundary
+		//                size specification parameters
 
 		ExtendedRandomAccessibleInterval<T, RandomAccessibleInterval<T>> erai = Views.extendBorder(image);
 		//...but(!) the extension is infinite (despite the name!), so one has to
 		//re-introduce Interval to make it bounded again, like "normal" images are:
 		IntervalView<T> mirroredImage = Views.interval(erai, Intervals.expand(image, 50));
-		ImageJFunctions.show(mirroredImage, "Mirrored image with 50x wide boundary - created step by step");
+		ImageJFunctions.show(mirroredImage, "Mirrored image with 50px wide boundary - created step by step");
 
 		//the "shortcut" equivalent:
 		mirroredImage = Views.interval(
@@ -84,9 +84,9 @@ public class t1_Views {
 		//the change should be immediately visible in all views, no need to visit all
 		//of them and notify them somehow.
 
-		//Favourite use-case for this is when one needs to sweep over small number
+		//My favorite use-case for this is when one needs to sweep over small number
 		//of pixels arranged in a fixed spatial pattern, like e.g. horizontal central
-		//difference:  ([x-h,...] - [x+h,...]) / 2h where 'h'
+		//difference:  ([x-h,...] - [x+h,...]) / 2h where 'h' is a small positive number of pixels
 
 		//Prepare output memory (image):
 		Img<T> resultImage = image.factory().create(image);
@@ -94,7 +94,7 @@ public class t1_Views {
 
 		//Extend boundaries to make sure input images can provide values just "everywhere"
 		ExtendedRandomAccessibleInterval<T, RandomAccessibleInterval<T>> extendedImage = Views.extendBorder(image);
-		//This is, btw, a RandomAccessible (infinite extent) image, without na Interval (we've talked about that)....
+		//This is, btw, a RandomAccessible (infinite extent) image, without an Interval (we've talked about that)....
 		//
 		//...over which we would create two constructions with same-sized Intervals but
 		//shifted - positioned slightly off w.r.t. the original image (Interval)
@@ -111,8 +111,11 @@ public class t1_Views {
 		//btw, beware! that for CellImgs such looping wraps at cell boundaries...
 		//...and not only at the very ends of the image
 
+		//Note that the simultaneous iteration over several views is possible, but in order to guarantee
+		//that the iteration order is always the same, it is best to use LoopBuilder:
 		LoopBuilder.setImages(resultImage, backwardShiftedImage,forwardShiftedImage)
 				.flatIterationOrder() //assures that the scanning order is always the "natural one"
+				//.multiThreaded() //can be used to parallelize the loop, but doesn't mix well with flatIterationOrder()
 				.forEachPixel((r, b,f) -> r.setReal( (f.getRealDouble()-b.getRealDouble())/2.0 ));
 		ImageJFunctions.show(resultImage, "horizontal central difference with LoopBuilder ("+resultImage.getClass().getSimpleName()+")");
 	}
@@ -120,33 +123,33 @@ public class t1_Views {
 	public static <T extends RealType<T>>
 	void addingIterability(final RandomAccessibleInterval<T> image) {
 		//It was suggested earlier in this tutorial that methods should ideally
-		//be requesting images using the most light-weight possible types, that is,
-		//types that offer just the required property/behaviour and minimum beyond it.
+		//be requesting images using types that are as light-weight as possible, that is,
+		//types that offer just the required property/behavior and minimum beyond it.
 		//
 		//It was also noted that it usually resorts to requesting RAIs, instead of
 		//full 'Img', sacrificing the iterability. If it turns out that the iterability
-		//could be "good to have back", there exists Views solution for it:
+		//could be "good to have back", there exists a Views solution for it:
 		//
 		//image.cursor(); //doesn't work, type-wise it is a pure RAI
 		Views.iterable(image).cursor(); //now the iterability is back
 		Views.flatIterable(image).cursor();
 		//
-		//where the former offers iterability that's natural for the respective 'image' backends,
-		//the later restores always the "normal" iterability (scanning fully first dimension, and
+		//where the former uses the iteration order that's natural for the respective 'image' backends,
+		//the latter always restores the "standard" iteration order (scanning fully first dimension, and
 		//only then the scanning is moved in the second dimension etc.).
 
-		//Note that since Java offers reflection, it is possible to figure out during the runtime
+		//Note that, since Java offers reflection, it is possible to figure out during the runtime
 		//what class a given object actually is. It may turn out that the input RAI is actually
 		//stripped down 'Img' where the iterability was provided, and if that is the case this
-		//Views method basically "only casts" back to 'Img'. So the Views.iterable() need not be
-		//always an expensive operation....
+		//Views method basically "only casts" back to 'Img'. So the Views.iterable() doesn't always
+		//have to be an expensive operation....
 	}
 
 	public static <T extends RealType<T>>
 	void limitingViews(final RandomAccessibleInterval<T> image) {
 		//Limiting and extending the view range (Interval) onto the image is possible.
 		//
-		//In the former case, by setting up a ROI, one saves the number of visited pixels.
+		//In the former case, by setting up a ROI, one reduces the number of visited pixels.
 		//This can be useful when working with instance segmentation masks (if one remembers
 		//bounding boxes around all labels).
 
@@ -174,7 +177,7 @@ public class t1_Views {
 
 	public static <T extends RealType<T>>
 	void axesAndDimensions(final RandomAccessibleInterval<T> image) {
-		//The axes can be also permuted, and also the image dimensionality
+		//The axes can also be permuted, and also the image dimensionality
 		//can be decreased or increased.
 
 		ImageJFunctions.show( Views.permute(image, 0,1),
@@ -194,23 +197,23 @@ public class t1_Views {
 	public static void main(String[] args) throws IOException {
 
 		//This session is about the utility class Views -- a collection of extremely useful
-		//tools in the hands of image processing programmer, where a tool = one individual View.
+		//tools in the hands of image processing programmers, where a tool = one individual View.
 
-		//The governing idea of the Views is basically, considering now a single View on a given
-		//input image, to provide a fake, made-up image that shows certain modified version
+		//The governing idea of Views basically is, considering now a single View on a given
+		//input image, to provide a fake, made-up image that shows a certain modified version
 		//of the input image. The input image is never modified, and the provided made-up image
 		//is computed on-demand and on-the-fly.
 		//
-		//Another strong design motif is that the Views can be chained. This allows for the
+		//Another strong design motif is that Views can be chained. This allows for the
 		//building of sophisticated constructs over original "normal" images. These constructs
 		//are, again, evaluated only on on-demand basis and shall not be proactively computed, and
 		//thus memorized on some discrete grids, which would have lead to accuracy and information loss.
 		//
-		//Especially, however, the Views can masquerade (alleviate) the usual "technicalities"
+		//Especially, however, Views can masquerade (alleviate) the usual "technicalities"
 		//present in image processing pipelines (such as treating boundary conditions within the
 		//main for loop), enabling the programmer to focus on the image processing itself.
 
-		//Examples of Views are reduction of the input image dimensionality, flipping axes,
+		//Examples of Views are: reduction of the input image dimensionality, flipping axes,
 		//extending images with "procedurally generated outside surroundings", or various
 		//image transforms. A complete list of them is best obtained using the autocompletion
 		//functionality of most IDEs, just type 'Views.' and study the pop-up list of available

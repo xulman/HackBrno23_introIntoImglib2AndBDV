@@ -31,7 +31,7 @@ public class t2_RealViews {
 				"Interpolated real-grid image", Bdv.options().addTo( bdv.getBdvHandle() ));
 	}
 
-	//example how to obtain a affine trasformed version of the image (rotate, scale)
+	//example how to obtain an affine transformed version of the image (rotate, scale)
 
 	public static void main(String[] args) {
 		final Img<FloatType> image = t4_HandlingDimensionalityExample.get3dImageWithPattern();

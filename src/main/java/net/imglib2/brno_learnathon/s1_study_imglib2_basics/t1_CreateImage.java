@@ -19,7 +19,7 @@ public class t1_CreateImage {
 
 	public static void createImages() {
 		//To create an image, one has to specify everything, every detail.
-		//Normally, since image is a collection of values (represented with given pixel type)
+		//Normally, since an image is a collection of values (represented with given pixel type)
 		//spread over a grid of certain size (the image size). In ImgLib2 we have to additionally
 		//specify the image's storage backend:
 		//
@@ -30,7 +30,7 @@ public class t1_CreateImage {
 		//
 		//Notice "pixel resolution" is not specified.
 
-		//If you aks IDE to infer type, this is how it can end up....
+		//If you ask the IDE to infer the type, this is how it can end up...
 		ArrayImg<UnsignedShortType, ShortArray> img1 = ArrayImgs.unsignedShorts(5, 5);
 		PlanarImg<FloatType, FloatArray> img2 = PlanarImgs.floats(6, 4, 3);
 
@@ -58,7 +58,7 @@ public class t1_CreateImage {
 		//is "native"... which means "normal"... which means "store-/load-able".
 		//Hmm... still it is not implying that we can do any math on the pixel values, we
 		//need to make sure that the pixel type is "numeric". Should come as no surprise that
-		//the most frequent pixel types are both numeric and native... just like our type T here:
+		//the most frequent pixel types are both numeric and native... just like our type T, here:
 		Img<T> img2 = LearnathonHelpers.openImageResource("/blobs.tif");
 
 		//Often, however, the programmer can assume and request certain type. Still, the loading
@@ -72,7 +72,7 @@ public class t1_CreateImage {
 		createImages();
 		Img<UnsignedByteType> imgB = loadImages();
 
-		//What good is to have an image if you cannot look at it?
+		//What good is having an image if you cannot look at it?
 		//For now only, let's ask ImageJ to display it using the following convenience call:
 		ImageJFunctions.show(imgB);
 	}

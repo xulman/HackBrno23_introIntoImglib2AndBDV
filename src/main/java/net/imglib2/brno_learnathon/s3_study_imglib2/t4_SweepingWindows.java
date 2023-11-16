@@ -25,7 +25,7 @@ public class t4_SweepingWindows {
 		//set up an n-dimensional sphere around the first position
 		final HyperSphere<T> sphereShapedWindow = new HyperSphere<>(image, sphere1Position, SPHERE_RADIUS);
 
-		//fill the sphere pixels with some value, that is, set all pixels
+		//fill the sphere's pixels with some value, that is, set all pixels
 		//that coincide with the sphere extent to that value
 		Cursor<T> cursorInsideTheSphere = sphereShapedWindow.cursor();
 		while (cursorInsideTheSphere.hasNext())
@@ -57,23 +57,23 @@ public class t4_SweepingWindows {
 		//
 		//Notice (which is the usual sign for "abstract constructions") that
 		//'shape.neighborhoodsRandomAccessible' accepts RandomAccessible and
-		//not RandomAcessibleInterval (iterability is not required).
+		//not RandomAccessibleInterval (iterability is not required).
 		HyperSphereShape shape = new HyperSphereShape( SPHERE_RADIUS );
-		RandomAccessible< Neighborhood< T > > hyperspheres = shape.neighborhoodsRandomAccessible( image );
+		RandomAccessible< Neighborhood< T > > hyperSpheres = shape.neighborhoodsRandomAccessible( image );
 
-		//'hyperspheres' is a RandomAccessible (an image-like container) over all
+		//'hyperSpheres' is a RandomAccessible (an image-like container) over all
 		//sphere-shaped neighborhoods in the image. RandomAccess allows to choose
 		//a particular position, application of the shape, which is materialized
 		//in a particular iterable Neighborhood object:
-		RandomAccess< Neighborhood< T > > hypersphere = hyperspheres.randomAccess();
-		hypersphere.setPosition( sphere1Position );
-		hypersphere.get().forEach( t -> t.setReal( 2550 ) );
+		RandomAccess< Neighborhood< T > > hyperSphere = hyperSpheres.randomAccess();
+		hyperSphere.setPosition( sphere1Position );
+		hyperSphere.get().forEach( t -> t.setReal( 2550 ) );
 		//or, shorter using the already known pattern:
-		//hyperspheres.getAt( sphere1Position ).forEach( t -> t.setReal( 2550 ) );
+		//hyperSpheres.getAt( sphere1Position ).forEach( t -> t.setReal( 2550 ) );
 
 		//reposition closer to the image boundary and draw another sphere
-		hypersphere.setPosition( sphere2Position );
-		hypersphere.get().forEach( t -> t.setReal( 255 ) );
+		hyperSphere.setPosition( sphere2Position );
+		hyperSphere.get().forEach( t -> t.setReal( 255 ) );
 	}
 
 	public static void main(String[] args) {
@@ -88,11 +88,11 @@ public class t4_SweepingWindows {
 		closeToEdgePos.setPosition(99, 0);
 
 		drawSphereAtImageCentre( image, centerPos, closeToEdgePos );
-		ImageJFunctions.show(image, "Patterned image with spheres at centre and boundary.v1");
+		ImageJFunctions.show(image, "Patterned image with spheres at center and boundary.v1");
 
 		image = t4_HandlingDimensionalityExample.get3dImageWithPattern();
 		drawSphereAtImageCentre2( image, centerPos, closeToEdgePos );
-		ImageJFunctions.show(image, "Patterned image with spheres at centre and boundary.v2");
+		ImageJFunctions.show(image, "Patterned image with spheres at center and boundary.v2");
 
 		//Notice that the second sphere, the one close to the (right) image boundary, is "continuing"
 		//on the other side (left) of the image? This is an unwanted result, which additionally
@@ -106,6 +106,6 @@ public class t4_SweepingWindows {
 
 		image = t4_HandlingDimensionalityExample.get3dImageWithPattern();
 		drawSphereAtImageCentre2(Views.extendZero(image), centerPos, closeToEdgePos );
-		ImageJFunctions.show(image, "Patterned image with spheres at centre and boundary.v2.zero_boundary");
+		ImageJFunctions.show(image, "Patterned image with spheres at center and boundary.v2.zero_boundary");
 	}
 }
