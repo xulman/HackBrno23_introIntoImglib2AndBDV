@@ -1,5 +1,6 @@
 package net.imglib2.brno_learnathon.s5_study_bigdataviewer_basics;
 
+import bdv.util.Affine3DHelpers;
 import bdv.util.Bdv;
 import bdv.util.BdvFunctions;
 import bdv.util.BdvSource;
@@ -7,6 +8,7 @@ import java.util.Random;
 import net.imglib2.brno_learnathon.scaffold.LearnathonHelpers;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
+import net.imglib2.realtransform.AffineTransform3D;
 import net.imglib2.type.numeric.ARGBType;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
 
@@ -31,10 +33,19 @@ public class t1_Vistools {
 		//
 		// Here we add a random 3D ARGB image:
 		Random random = new Random();
-		Img< ARGBType > img2 = ArrayImgs.argbs(100, 100, 100);
+		Img< ARGBType > img2 = ArrayImgs.argbs(200, 100, 50);
 		img2.forEach(t -> t.set(random.nextInt()));
 		BdvSource img2Source = BdvFunctions.show( img2, "random pixels",
 				Bdv.options().addTo( bdv ) );
+
+
+		final AffineTransform3D transform = new AffineTransform3D();
+		transform.rotate(0, 3.14159 / 2.0);
+		//
+		Img< ARGBType > img3 = ArrayImgs.argbs(200, 100, 50);
+		img3.forEach(t -> t.set(random.nextInt()));
+		BdvSource img3Source = BdvFunctions.show( img2, "random pixels",
+				  Bdv.options().addTo( bdv ).sourceTransform( transform ) );
 
 		// More specifically, the return value of most BdvFunctions methods is BdvSource.
 		// BdvSource extends Bdv, so it is also a handle to the BDV instance.
