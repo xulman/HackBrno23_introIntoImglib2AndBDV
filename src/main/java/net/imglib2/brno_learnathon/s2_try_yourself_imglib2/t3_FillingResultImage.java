@@ -8,6 +8,7 @@ import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
 import net.imglib2.img.cell.CellImgFactory;
+import net.imglib2.loops.LoopBuilder;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Intervals;
 import net.imglib2.view.Views;
@@ -88,9 +89,9 @@ public class t3_FillingResultImage {
 		final Cursor<T> lc_out = Views.iterable(output).localizingCursor();
 
 		while (lc_out.hasNext()) {
-			lc_out.next();
+			lc_out.fwd();
 			T pixel = input.getAt(lc_out); //taking getAt() shortcut instead of using a proper accessor
-			pixel.setReal( Math.sqrt(pixel.get()) );
+			lc_out.get().setReal( Math.sqrt(pixel.get()) );
 		}
 	}
 
@@ -218,6 +219,8 @@ public class t3_FillingResultImage {
 	public static void main(String[] args) {
 		Img<FloatType> arrayImg = ArrayImgs.floats(1024,1024,100);
 		Img<FloatType> cellImg = new CellImgFactory<>(new FloatType(), 100,100,50).create(1024,1024,100);
+
+		LoopBuilder.setImages(arrayImg, cellImg).forEachPixel((a,c) -> c.setReal(Math.sqrt(a.get())));
 
 		doExperiment(arrayImg, cellImg);
 		doExperiment(cellImg, arrayImg);
