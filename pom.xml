@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.scijava</groupId>
 		<artifactId>pom-scijava</artifactId>
-		<version>36.0.0</version>
+		<version>37.0.0</version>
 		<relativePath />
 	</parent>
 
@@ -142,6 +142,11 @@ Jean-Yves Tinevez and Michael Zinsmaier.</license.copyrightOwners>
 <!--			<groupId>net.imagej</groupId>-->
 <!--			<artifactId>imagej-legacy</artifactId>-->
 <!--		</dependency>-->
+		<dependency>
+			<groupId>sc.fiji</groupId>
+			<artifactId>simplified-io</artifactId>
+			<version>1.0.1</version>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>

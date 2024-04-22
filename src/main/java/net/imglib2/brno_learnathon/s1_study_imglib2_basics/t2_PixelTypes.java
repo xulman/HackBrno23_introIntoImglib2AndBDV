@@ -1,5 +1,7 @@
 package net.imglib2.brno_learnathon.s1_study_imglib2_basics;
 
+import net.imagej.ImgPlus;
+import net.imglib2.RandomAccessibleInterval;
 import net.imglib2.brno_learnathon.scaffold.LearnathonHelpers;
 import net.imglib2.img.Img;
 import net.imglib2.img.array.ArrayImgs;
@@ -17,6 +19,7 @@ import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
+import sc.fiji.simplifiedio.SimplifiedIO;
 
 public class t2_PixelTypes {
 
@@ -178,5 +181,31 @@ public class t2_PixelTypes {
 
 	public static void main(String[] args) {
 		onTypesHierarchy();
+	}
+
+
+	public static <T extends RealType<T>>
+	void workWithRealTypedImage(Img<T> image) {
+		//the trick is that one calls it as:
+		//workWithRealTypedImage((Img)unknownTypeImage);
+
+		//now any pixel of the image is guaranteed to be of the type 'T'
+		T theFirstPixel = image.firstElement();
+	}
+
+	public static
+	void readAndProcessUnknownTypeImage() {
+		final String path = "/some/path/to/someImage.tif";
+
+		//loads any image, which can be of any pixel type...
+		Img<?> imgOfUnknowPixelType = SimplifiedIO.openImage(path).getImg();
+		workWithRealTypedImage( (Img)imgOfUnknowPixelType );
+
+		//load the image and make sure it appears as Gray16 type, or complain...
+		try {
+			Img<UnsignedShortType> imgOfGray16PixelType = SimplifiedIO.openImage(path, new UnsignedShortType()).getImg();
+		} catch (IllegalStateException e) {
+			System.out.println("Failed converting the input image to an UnsignedShortType.");
+		}
 	}
 }
