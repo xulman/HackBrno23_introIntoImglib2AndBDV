@@ -9,13 +9,18 @@ import net.imglib2.brno_learnathon.s2_try_yourself_imglib2.t4_HandlingDimensiona
 import net.imglib2.img.Img;
 import net.imglib2.img.cell.CellImgFactory;
 import net.imglib2.img.display.imagej.ImageJFunctions;
+import net.imglib2.interpolation.randomaccess.LanczosInterpolatorFactory;
 import net.imglib2.loops.LoopBuilder;
+import net.imglib2.realtransform.AffineGet;
+import net.imglib2.realtransform.RealViews;
+import net.imglib2.realtransform.ScaleAndTranslation;
 import net.imglib2.type.NativeType;
 import net.imglib2.type.numeric.RealType;
 import net.imglib2.type.numeric.real.FloatType;
 import net.imglib2.util.Intervals;
 import net.imglib2.view.ExtendedRandomAccessibleInterval;
 import net.imglib2.view.IntervalView;
+import net.imglib2.view.RandomAccessibleOnRealRandomAccessible;
 import net.imglib2.view.Views;
 
 import java.io.IOException;
@@ -189,6 +194,39 @@ public class t1_Views {
 				"Image with new 4th dimension.");
 		//However, no new data (content) is created in this View. Instead, the current
 		//data is used at any coordinate in the new 4th dimension.
+	}
+
+	public static <T extends RealType<T>>
+	void rescaling(final RandomAccessibleInterval<T> image) {
+
+		//integer down-scale factor
+		final int downscaleFactor = 2;
+/*
+		int[] downscaleFactors = new int[ image.numDimensions() ];
+		Arrays.fill(downscaleFactors,2);
+*/
+		ImageJFunctions.show(
+				  Views.subsample(image, downscaleFactor)
+		);
+
+		//real down-scale factor
+		LanczosInterpolatorFactory< T > lanczos = new LanczosInterpolatorFactory<>();
+
+		double[] downscaleFactors = new double[ image.numDimensions() ];
+		double[] translationShifts = new double[ image.numDimensions() ];
+		Arrays.fill(downscaleFactors, 2.0);
+		Arrays.fill(translationShifts, 0.0); //only to make it explicit that there shall be no translation
+
+		long[] scaledDimensions = new long[ image.numDimensions() ];
+		for (int d = 0; d < scaledDimensions.length; ++d)
+			scaledDimensions[d] = (long)Math.floor( (double)image.dimension(d) / downscaleFactors[d] );
+
+		AffineGet scaleTransform = new ScaleAndTranslation(downscaleFactors, translationShifts);
+		IntervalView<T> scaledImg = Views.interval(
+				  Views.raster(RealViews.affineReal(Views.interpolate(image, lanczos), scaleTransform)),
+				  new FinalInterval(scaledDimensions));
+
+		ImageJFunctions.show( scaledImg );
 	}
 
 	public static void main(String[] args) throws IOException {
