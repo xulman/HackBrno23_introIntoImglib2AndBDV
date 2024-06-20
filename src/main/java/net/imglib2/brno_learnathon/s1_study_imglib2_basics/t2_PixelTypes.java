@@ -17,6 +17,7 @@ import net.imglib2.type.numeric.integer.UnsignedIntType;
 import net.imglib2.type.numeric.integer.UnsignedShortType;
 import net.imglib2.type.numeric.real.DoubleType;
 import net.imglib2.type.numeric.real.FloatType;
+import org.checkerframework.common.returnsreceiver.qual.This;
 
 public class t2_PixelTypes {
 
@@ -36,7 +37,7 @@ public class t2_PixelTypes {
 		//recognize, e.g., an "unsigned byte"...
 
 		//Also specific (microscopy) pixel types of not bytes-multiple sizes
-		//(btw, they are usually nicely packed in the memory not to waste it):
+		//(btw, they are usually nicely packed in the memory to not waste space):
 		BitType bitType = new BitType();
 		BoolType boolType = new BoolType();
 		Unsigned12BitType unsigned12BitType = new Unsigned12BitType(); //optical microscope camera type :)
@@ -82,7 +83,7 @@ public class t2_PixelTypes {
 
 		//The second one is partly touched here:
 		noteOnGenerics();
-		//The "mighty" RealType provides also methods that are wanted to return
+		//The "mighty" RealType also provides methods that are desired to return
 		//the type T itself (which in this scenario is currently substituted
 		//with the RealType). In order to achieve that, the information about
 		//the current T needs to be passed inside into RealType, and so the
@@ -90,7 +91,7 @@ public class t2_PixelTypes {
 	}
 
 	public static void integerRealIntermezzo() {
-		//IntegerType extends RealType: it offers all what real numbers can
+		//IntegerType extends RealType: it offers everything which real numbers can
 		//offer functionality-wise (!)
 		//
 		//This may seem to be the opposite to the mathematical, set theory
@@ -119,7 +120,7 @@ public class t2_PixelTypes {
 		//it applies Util.round() (our own Util from the net.imglib2.util package)
 		//
 		//The type inheritance hierarchy only makes sense in the "read"
-		//direction. Expect "write" write to be lossy.
+		//direction. Expect "write" to be lossy.
 		integerType.setReal(5.5);
 		System.out.println("5.5 stored and retrieved from IntegerType is "+integerType.getInteger());
 	}
@@ -137,7 +138,7 @@ public class t2_PixelTypes {
 		//same type (and holds initially the same value):
 		TA anotherInstanceOfTheSameType = oneType.copy();
 
-		//When further manipulating with the type value, there are several shortcuts:
+		//When further manipulating the type value, there are several shortcuts:
 		anotherInstanceOfTheSameType.setOne();
 		anotherInstanceOfTheSameType.setZero();
 
@@ -151,7 +152,7 @@ public class t2_PixelTypes {
 		//work over images that need not be always of the same pixel type.
 
 		//For example, a sum of pixels values of this image can be then
-		//implemented, for example, this particular way:
+		//implemented, for example, in this particular way:
 		double sum = 0;
 		for (T pixel : img) {
 			sum += pixel.getRealDouble();
@@ -162,9 +163,9 @@ public class t2_PixelTypes {
 	public static void noteOnGenerics() {
 		//While Java generics allow to avoid repetitive blocks of code (one block for one particular pixel type),
 		//the type represented in a generic, e.g. <T>, is visible/available only during the compile time.
-		//At runtime, the T in <T> is replaced with Object, the basis of any Java non-elementary type.
-		//In order to "preserve" the information about pixel type into runtime, one needs to maintain/keep
-		//an existing object of that type. This is a strategy adopted, for example, in our type-safe loader:
+		//At runtime, the T in <T> is replaced with Object (this is called type erasure), the basis of any Java
+		//non-elementary type. In order to "preserve" the information about pixel type into runtime, one needs to
+		//maintain/keep an existing object of that type. This is a strategy adopted, for example, in our type-safe loader:
 		Img<UnsignedByteType> img1 = LearnathonHelpers.openImageResource("/blobs.tif", new UnsignedByteType());
 
 		//Alternatively, one hides, encodes essentially, the type information into the method's definition itself:

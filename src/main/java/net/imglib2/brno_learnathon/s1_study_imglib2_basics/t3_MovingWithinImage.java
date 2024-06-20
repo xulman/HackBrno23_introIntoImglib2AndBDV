@@ -28,11 +28,11 @@ public class t3_MovingWithinImage {
 			T pixel = cursor.next();
 			pixel.setReal( pixel.getRealDouble() + 5 );
 		}
-		//(Notice that the cursor is initialized ill and
-		// must be next() before the actual use)
+		//(Notice that the cursor requires using next() before any actual use after
+		// the initialization)
 		//
 		//Also notice that we didn't have to even think about the actual dimensionality
-		//of the image that is being swept. The cursor just visited all pixels in
+		//of the image that is being iterated over. The cursor just visited all pixels in
 		//the image and made sure no pixel was accessed twice; but(!) the order in
 		//which the pixels were visited is not defined -- every image backend has
 		//the choice to iterate in an order that's optimal for it
@@ -69,7 +69,7 @@ public class t3_MovingWithinImage {
 		//Where is the accessor now?
 		accessor.localize( coordinate );
 
-		//This is another convenient shortcut.. if one knows the dimensionality:
+		//This is another convenient shortcut, if one knows the dimensionality:
 		if (image.numDimensions() == 5) accessor.setPositionAndGet(0,0,0,0,0);
 
 		//Btw, there exists even a shorter shortcut ;)....:
@@ -149,7 +149,7 @@ public class t3_MovingWithinImage {
 
 		//Soooo, we saw the two fundamental access concepts:
 		// "I am a passenger, the image backend drags me around the full image
-		//  in an reasonable way, and my code is thus somewhat light-weight."
+		//  in a reasonable way, and my code is thus somewhat light-weight."
 		// vs.
 		// "I am active, I decide where to move in the image, and likely I don't
 		//  even intend to iterate over the image, I just peek at (random) places."
@@ -173,14 +173,14 @@ public class t3_MovingWithinImage {
 		//e.g., by alleviating the iterability when accepting only RandomAccessible
 		//images, it opens up this method to more various (and exotic) backends.
 		//
-		//What "more various backends" can be? Imagine, as a simple example, one assigns an
+		//What can "more various backends" be? Imagine, as a simple example, one assigns an
 		//interpolator (a piece of code that knows how to fetch off-grid pixels, pixels from
 		//real valued coordinates) to an image and obtains this way an enhanced image that
 		//knows its value for any real coordinate but looses (obvious, natural) iterability.
 		//Such image basically emulates a continuous function......
 		//....whose domain may remain bounded, or not.
 		//
-		//Sorry, it got complicated, was intentional, read on, this could come handy:
+		//Sorry, it got complicated, was intentional, read on, this could come in handy:
 
 		//In forums, in writings, one often finds RAI and II instead of their full names
 		//(check their first letters...). But the full (and long) names are not here to annoy
@@ -198,9 +198,9 @@ public class t3_MovingWithinImage {
 		//Says only that all elements of the underlying object (again, be it
 		//voxels in an image, or points of a point cloud) can be naturally visited, one by
 		//one. Notice that (existing) elements are visited, it's not about visiting all
-		//possible coordinates! It reminds very much the paradigm of a linked list data
+		//possible coordinates! It is very much reminiscent of the paradigm of a linked list data
 		//structure, or tape (sequential) storage (that rewinds over empty sectors).
-		//Anyway, such an object may be target in the for-each loop (e.g., "for px : image").
+		//Anyway, such an object may be used in a for-each loop (e.g., "for px : image").
 
 		//RandomAccessible:
 		//
@@ -214,7 +214,7 @@ public class t3_MovingWithinImage {
 		//Images, on the other hand, are a great example because they typically assume some
 		//underlying grid and with it comes an implicit addressing scheme. Needless to say,
 		//the addressing scheme here recognizes only integer coordinates (how to read at 2.5
-		//sector when full sector is the minimum unit one can read/write?)
+		//sector when a full sector is the minimum unit one can read/write?)
 		//
 		//The notion of being able to randomly access a unit of data is not purely only in
 		//the freedom of the choice itself. Realizing what's the difference in what it takes
@@ -254,7 +254,7 @@ public class t3_MovingWithinImage {
 		//Btw, did you notice that one can "easily emulate" iterability from
 		//random accessibility, while the opposite direction is more difficult?
 		//Besides, by adding computational constructions on top of the "normal images"
-		//(such as in the above example with interpolation), it is easier to loose
+		//(such as in the above example with interpolation), it is easier to lose
 		//iterability than random accessibility.
 		//
 		//In practice, we are making use of this observation a lot and work
