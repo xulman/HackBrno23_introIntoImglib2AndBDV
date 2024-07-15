@@ -10,6 +10,7 @@ import java.io.IOException;
 import net.imglib2.brno_learnathon.scaffold.LearnathonHelpers;
 import net.imglib2.img.Img;
 import net.imglib2.type.numeric.integer.UnsignedByteType;
+import org.scijava.ui.behaviour.ClickBehaviour;
 import org.scijava.ui.behaviour.DragBehaviour;
 import org.scijava.ui.behaviour.io.InputTriggerConfig;
 import org.scijava.ui.behaviour.util.Behaviours;
@@ -57,7 +58,7 @@ public class y1_bbox
 		}
 
 		final BdvLineOverlay myLineOverlay = new BdvLineOverlay();
-		final BdvOverlaySource<BdvOverlay> bdvOverlay = BdvFunctions.showOverlay(myLineOverlay, "mouse line", BdvOptions.options().addTo(bdv));
+		final BdvOverlaySource<BdvOverlay> bdvOverlay = BdvFunctions.showOverlay(myLineOverlay, "SAMJ line", BdvOptions.options().addTo(bdv));
 
 		//stops drawing the line as soon as viewport has changed
 		//or, TODO, adjust the coordinates based on the new transform (but that's not what we want for SAMJ)
@@ -67,7 +68,7 @@ public class y1_bbox
 		 * Install behaviour for moving a line into img with shortcut "L"
 		 */
 		final Behaviours behaviours = new Behaviours( new InputTriggerConfig() );
-		behaviours.install( bdv.getBdvHandle().getTriggerbindings(), "line" );
+		behaviours.install( bdv.getBdvHandle().getTriggerbindings(), "samj" );
 		behaviours.behaviour( new DragBehaviour()
 		{
 			final ViewerPanel viewer = bdv.getBdvHandle().getViewerPanel();
@@ -99,6 +100,14 @@ public class y1_bbox
 				myLineOverlay.setEndOfLine(x,y);
 				System.out.println("TRIGGER AFTER A LINE WAS INSERTED");
 			}
-		}, "line", "L" );
+		}, "samj_line", "L" );
+
+		behaviours.behaviour(new ClickBehaviour() {
+			@Override
+			public void click(int x, int y) {
+				System.out.println("Going to add a new SAMJ view");
+				bdv.getBdvHandle().getViewerPanel().displayToGlobalCoordinates();
+			}
+		}, "samj_new_view", "A");
 	}
 }
